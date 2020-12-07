@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+    <head>
+        <title>jsPlumbToolkit - Flowchart Builder Example</title>
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1" />
+        <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+        <!-- CSS -->
+        <link rel="stylesheet" href="node_modules/jsplumbtoolkit/dist/css/jsplumbtoolkit.css">
+        <link rel="stylesheet" href="node_modules/jsplumbtoolkit-syntax-highlighter/dist/css/jsplumbtoolkit-syntax-highlighter.css">
+        <link rel="stylesheet" href="node_modules/jsplumbtoolkit-demo-support/dist/css/jsplumbtoolkit-demo-support.css">
+        <link rel="stylesheet" href="node_modules/jsplumbtoolkit-editable-connectors/dist/css/jsplumbtoolkit-editable-connectors.css"-->
+        <!-- /CSS -->
+        <link rel="stylesheet" href="app.css">
+
+    </head>
+    <body>
+        <!-- content -->
+        <script type="text/x-jtk-templates" src="templates.html"></script>
+
+        <div class="jtk-demo-main" id="jtk-demo-flowchart">
+
+
+            <!-- this is the main drawing area -->
+            <div class="jtk-demo-canvas">
+                <!-- controls -->
+                <div class="controls" can-undo="false" can-redo="false">
+                    <i class="fa fa-arrows selected-mode" mode="pan" title="Pan Mode"></i>
+                    <i class="fa fa-pencil" mode="select" title="Select Mode"></i>
+                    <i class="fa fa-home" reset title="Zoom To Fit"></i>
+                    <i class="fa fa-undo" undo title="Undo last action"></i>
+                    <i class="fa fa-repeat" redo title="Redo last action"></i>
+                    <i class="fa fa-times" clear title="Clear flowchart"></i>
+                </div>
+                <!-- miniview -->
+                <div class="miniview"></div>
+            </div>
+            <div class="jtk-demo-rhs">
+                <!-- the node palette -->
+                <div class="sidebar node-palette">
+                    <div data-node-type="question" title="Drag to add new" class="sidebar-item">
+                        <i class="icon-tablet"></i>Question
+                    </div>
+                    <div data-node-type="action" title="Drag to add new" class="sidebar-item">
+                        <i class="icon-eye-open"></i>Action
+                    </div>
+                    <div data-node-type="output" title="Drag to add new" class="sidebar-item">
+                        <i class="icon-eye-open"></i>Output
+                    </div>
+                </div>
+
+                <div class="description">
+                    <p>
+                        This sample application is a builder for flowcharts. Questions, actions and outputs are supported.
+                    </p>
+                    <ul>
+                        <li>Drag from the palette above onto the workspace to add nodes</li>
+                        <li>Drag from the arrow icon on any node that has one to any other node to establish a link, then provide a description for the link's label</li>
+                        <li>Click a link to edit its label.</li>
+                        <li>Click the 'Pencil' icon to enter 'select' mode, then select several nodes. Click the canvas to exit.</li>
+                        <li>Click the 'Home' icon to zoom out and see all the nodes.</li>
+                    </ul>
+                </div>
+
+                <!-- the current dataset -->
+                <div class="jtk-demo-dataset"></div>
+            </div>
+
+
+        </div>
+
+        <!-- /content -->
+
+        <!-- imports -->
+        <script src='node_modules/jsplumbtoolkit/dist/js/jsplumbtoolkit.js'></script>
+        <script src="node_modules/jsplumbtoolkit-syntax-highlighter/dist/js/jsplumbtoolkit-syntax-highlighter.js"></script>
+        <script src="node_modules/jsplumbtoolkit-undo-redo/dist/js/jsplumbtoolkit-undo-redo.js"></script>
+        <script src="node_modules/jsplumbtoolkit-drop/dist/js/jsplumbtoolkit-drop.js"></script>
+        <script src="node_modules/jsplumbtoolkit-labels/dist/js/jsplumbtoolkit-labels.js"></script>
+        <script src="node_modules/jsplumbtoolkit-editable-connectors/dist/js/jsplumbtoolkit-editable-connectors.js"></script>
+        <script src="node_modules/jsplumbtoolkit-print/dist/js/jsplumbtoolkit-print.js"></script>
+
+        <!-- /imports -->
+
+        <!-- demo -->    
+        <script src="app.js"></script>
+        <!-- /demo -->
+
+    </body>
+</html>

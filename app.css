@@ -1,0 +1,169 @@
+
+
+/* ------------------------ dialogs ----------------------------*/
+
+/* ----------------------- drag/drop interactions -------------- */
+.drop-hover {
+    background-color: #FCCCCC !important;
+}
+
+/* ----------------------- node styles ------------------------- */
+
+.flowchart-object {
+    z-index: 10;
+    border: none;
+    overflow: visible;
+    align-items: flex-start;
+    justify-content: flex-start;
+    background-color:transparent;
+}
+
+.jtk-node svg {
+    position: absolute;
+    stroke: #CCC;
+    stroke-width: 2px;
+    fill: white;
+    left: 0;
+    top: 0;
+}
+
+.flowchart-object text {
+
+    stroke: none;
+    fill: black;
+    font-family: "Open Sans",sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+
+}
+
+.flowchart-object .node-action {
+    display: none;
+    position: absolute;
+    top: -14px;
+    cursor: pointer;
+    z-index: 10000;
+    left: auto;
+    color:white;
+    transition:transform 0.1s;
+    font-family: sans-serif;
+    text-align: center;
+    opacity:0.9;
+
+}
+
+.flowchart-object .node-action:hover {
+    transform: scale(1.3, 1.3);
+}
+
+
+.flowchart-object .node-edit {
+    right: 25px;
+    background-color: #4ea758;
+
+}
+
+.flowchart-object .node-delete {
+    right: 4px;
+    background-color: #d83f3f;
+}
+
+.flowchart-object.jtk-surface-selected-element .node-action {
+    display: block;
+    width: 15px;
+    height: 15px;
+    top:-20px;
+    cursor:pointer;
+    line-height: 15px;
+
+}
+
+.flowchart-object .connect {
+    position:absolute;
+    left:50%;
+    margin-left:-7.5px;
+    background-color:rgb(132, 172, 179);
+    transition:transform 0.1s;
+}
+
+.flowchart-object .connect:hover {
+    transform: scale(1.2, 1.2);
+    opacity:1;
+}
+
+.flowchart-action .connect {
+    bottom:18px;
+}
+
+.flowchart-question .connect {
+    bottom:28px;
+}
+
+.flowchart-start .connect {
+    right: 17px;
+    left: auto;
+    top: 50%;
+    margin-top: -7.5px;
+}
+
+.connect {
+    width: 15px;
+    height: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    border-radius: 50%;
+}
+
+.connect:after {
+    content:"→";
+}
+
+.connection-drop svg {
+    fill:#CCC;
+}
+
+.connection-drop text {
+    fill:black;
+}
+
+/*
+    style for the delete button. this is in fact supplied in the editable connectors css as a default but on our own site
+    the cascade conspires to elide the background color and foreground color. Without wanting to mark the style as `!important` in our defaults stylesheet,
+    we instead supply them again here.
+ */
+.jtk-edge-delete {
+    background-color: orangered;
+    color:white;
+}
+
+/* styles for drag + drop */
+
+.jtk-surface.jtk-drag-drop-active {
+    outline:6px dotted #4ea758 !important;
+}
+
+.jtk-surface.jtk-drag-drop-hover {
+    outline: 6px solid #f7a45d !important;
+}
+
+svg.jtk-drag-drop-hover, svg.jtk-drag-drop-active {
+    outline:none !important;
+}
+
+svg.jtk-drag-drop-active path {
+    stroke:#4ea758;
+    stroke-width:3px;
+    stroke-dasharray:2 0 2 5;
+}
+
+svg.jtk-drag-drop-hover path {
+    stroke:#f7a45d;
+    stroke-width:4px;
+    stroke-dasharray:0;
+}
+
+.fa-times:after {
+    content:"✖"
+}
