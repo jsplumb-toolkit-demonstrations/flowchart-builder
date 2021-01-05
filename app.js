@@ -14,6 +14,14 @@
             return n.type;
         };
 
+// ------------------------- dialogs -------------------------------------
+
+        var dialogs = new jsPlumbToolkit.Dialogs({
+            selector: ".dlg"
+        });
+
+// ------------------------- / dialogs ----------------------------------
+
         // get the various dom elements
         var mainElement = document.querySelector("#jtk-demo-flowchart"),
             canvasElement = mainElement.querySelector(".jtk-demo-canvas"),
@@ -26,7 +34,7 @@
             idFunction: idFunction,
             typeFunction: typeFunction,
             nodeFactory: function (type, data, callback) {
-                jsPlumbToolkit.Dialogs.show({
+                dialogs.show({
                     id: "dlgText",
                     title: "Enter " + type + " name:",
                     onOK: function (d) {
@@ -57,18 +65,10 @@
 
 // ------------------------ / toolkit setup ------------------------------------
 
-// ------------------------- dialogs -------------------------------------
-
-        jsPlumbToolkit.Dialogs.initialize({
-            selector: ".dlg"
-        });
-
-// ------------------------- / dialogs ----------------------------------
-
 // ------------------------ rendering ------------------------------------
 
         var _editLabel = function(edge, deleteOnCancel) {
-            jsPlumbToolkit.Dialogs.show({
+            dialogs.show({
                 id: "dlgText",
                 data: {
                     text: edge.data.label || ""
@@ -121,7 +121,7 @@
                         editable:true,
                         anchor:"AutoDefault",
                         endpoint:"Blank",
-                        connector: ["EditableFlowchart", { cornerRadius: 3 } ],
+                        connector: ["Orthogonal", { cornerRadius: 3 } ],
                         paintStyle: { strokeWidth: 2, stroke: "rgb(132, 172, 179)", outlineWidth: 3, outlineStroke: "transparent" },	//	paint style for this edge type.
                         hoverPaintStyle: { strokeWidth: 2, stroke: "rgb(67,67,67)" }, // hover paint style for this edge type.
                         events: {
@@ -129,7 +129,7 @@
                                 renderer.startEditing(p.edge, {
                                     deleteButton:true,
                                     onMaybeDelete:function(edge, connection, doDelete) {
-                                        jsPlumbToolkit.Dialogs.show({
+                                        dialogs.show({
                                             id: "dlgConfirm",
                                             data: {
                                                 msg: "Delete Edge"
@@ -217,11 +217,11 @@
             compound:true
         });
 
-        jsPlumb.on(controls, "tap", "[undo]", function () {
+        renderer.on(controls, "tap", "[undo]", function () {
             undoredo.undo();
         });
 
-        jsPlumb.on(controls, "tap", "[redo]", function () {
+        renderer.on(controls, "tap", "[redo]", function () {
             undoredo.redo();
         });
 
@@ -240,34 +240,34 @@
         });
 
         // pan mode/select mode
-        jsPlumb.on(controls, "tap", "[mode]", function () {
+        renderer.on(controls, "tap", "[mode]", function () {
             renderer.setMode(this.getAttribute("mode"));
         });
 
         // on home button click, zoom content to fit.
-        jsPlumb.on(controls, "tap", "[reset]", function () {
+        renderer.on(controls, "tap", "[reset]", function () {
             toolkit.clearSelection();
             renderer.zoomToFit();
         });
 
         // on clear button, perhaps clear the Toolkit
-        jsPlumb.on(controls, "tap", "[clear]", function() {
+        renderer.on(controls, "tap", "[clear]", function() {
             if (toolkit.getNodeCount() === 0 || confirm("Clear flowchart?")) {
                 toolkit.clear();
             }
         });
 
         // configure Drawing tools.
-        new jsPlumbToolkit.DrawingTools({
-            renderer: renderer
-        });
+        // new jsPlumbToolkit.DrawingTools({
+        //     renderer: renderer
+        // });
 
         //
         // node delete button.
         //
-        jsPlumb.on(canvasElement, "tap", ".node-delete", function () {
+        renderer.on(canvasElement, "tap", ".node-delete", function () {
             var info = renderer.getObjectInfo(this);
-            jsPlumbToolkit.Dialogs.show({
+            dialogs.show({
                 id: "dlgConfirm",
                 data: {
                     msg: "Delete '" + info.obj.data.text + "'"
@@ -279,13 +279,13 @@
         });
 
         // change a question or action's label
-        jsPlumb.on(canvasElement, "tap", ".node-edit", function () {
+        renderer.on(canvasElement, "tap", ".node-edit", function () {
             // getObjectInfo is a method that takes some DOM element (this function's `this` is
             // set to the element that fired the event) and returns the toolkit data object that
             // relates to the element. it ascends through parent nodes until it finds a node that is
             // registered with the toolkit.
             var info = renderer.getObjectInfo(this);
-            jsPlumbToolkit.Dialogs.show({
+            dialogs.show({
                 id: "dlgText",
                 data: info.obj.data,
                 title: "Edit " + info.obj.data.type + " name",
