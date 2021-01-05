@@ -1,12 +1,12 @@
 {
     "dependencies": {
-        "jsplumbtoolkit": "file:./jsplumbtoolkit.tgz",
-        "jsplumbtoolkit-undo-redo": "file:./jsplumbtoolkit-undo-redo.tgz",
-        "jsplumbtoolkit-drop": "file:./jsplumbtoolkit-drop.tgz",
-        "jsplumbtoolkit-labels": "file:./jsplumbtoolkit-labels.tgz",
-        "jsplumbtoolkit-editable-connectors": "file:./jsplumbtoolkit-editable-connectors.tgz",
-        "jsplumbtoolkit-syntax-highlighter": "file:./jsplumbtoolkit-syntax-highlighter.tgz",
-        "jsplumbtoolkit-demo-support": "file:./jsplumbtoolkit-demo-support.tgz",
-        "jsplumbtoolkit-print": "file:./jsplumbtoolkit-print.tgz"
+        "@jsplumb/toolkit": "file:./jsplumbtoolkit.tgz",
+        "@jsplumb/undo-redo": "file:./jsplumbtoolkit-undo-redo.tgz",
+        "@jsplumb/drop": "file:./jsplumbtoolkit-drop.tgz",
+        "@jsplumb/labels": "file:./jsplumbtoolkit-labels.tgz",
+        "@jsplumb/connector-editors": "file:./jsplumbtoolkit-connector-editors.tgz",
+        "@jsplumb/syntax-highlighter": "file:./jsplumbtoolkit-syntax-highlighter.tgz",
+        "@jsplumb/demo-support": "file:./jsplumbtoolkit-demo-support.tgz",
+        "@jsplumb/print": "file:./jsplumbtoolkit-print.tgz"
     }
 }
