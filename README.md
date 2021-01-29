@@ -113,13 +113,13 @@ are configured as both edge sources and targets.
         <div class="node-edit node-action"/>
         <div class="node-delete node-action delete"/>
         <div class="drag-start connect"></div>
-        <jtk-source port-type="source" filter=".connect"/>
+        <jtk-source port-type="questionSource" filter=".connect"/>
         <jtk-target port-type="target"/>
     </div>
 </script>
 ```
 
-The **Question** node differs only from **Action** in that it draws a diamond rather than a rectangle.
+The **Question** node differs  from **Action** in that it draws a diamond rather than a rectangle. It is also the only node type to use a source port of `questionSource`; this port type is mapped in the view to `edgeType:"response"`, meaning edges from this node are the only edges that have a label attached to them.
 
 **Output**
 
