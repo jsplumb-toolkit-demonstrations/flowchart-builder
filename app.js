@@ -191,7 +191,7 @@
                     renderer.stopEditing();
                 },
                 edgeAdded:function(params) {
-                    if (params.addedByMouse) {
+                    if (params.addedByMouse && params.type === "response") {
                         _editLabel(params.edge, true);
                     }
                 }
