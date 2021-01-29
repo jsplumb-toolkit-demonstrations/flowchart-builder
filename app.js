@@ -166,7 +166,10 @@
                         edgeType: "default"
                     },
                     "source": {
-                        maxConnections: -1,
+                        maxConnections: -1
+                    },
+                    "questionSource":{
+                        parent:"source",
                         edgeType: "response"
                     },
                     "target": {
