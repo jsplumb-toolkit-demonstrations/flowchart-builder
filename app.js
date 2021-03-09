@@ -1,6 +1,6 @@
 (function () {
 
-    jsPlumbToolkit.ready(function () {
+    jsPlumbToolkitBrowserUI.ready(function () {
 
         // ------------------------ toolkit setup ------------------------------------
 
@@ -16,7 +16,7 @@
 
 // ------------------------- dialogs -------------------------------------
 
-        var dialogs = new jsPlumbToolkit.Dialogs({
+        var dialogs = new jsPlumbToolkitDialogs.Dialogs({
             selector: ".dlg"
         });
 
@@ -30,7 +30,7 @@
             controls = mainElement.querySelector(".controls");
 
         // Declare an instance of the Toolkit, and supply the functions we will use to get ids and types from nodes.
-        var toolkit = jsPlumbToolkit.newInstance({
+        var toolkit = jsPlumbToolkitBrowserUI.newInstance({
             idFunction: idFunction,
             typeFunction: typeFunction,
             nodeFactory: function (type, data, callback) {
@@ -44,7 +44,7 @@
                             // and it was at least 2 chars
                             if (data.text.length >= 2) {
                                 // set an id and continue.
-                                data.id = jsPlumbUtil.uuid();
+                                data.id = toolkit.uuid();
                                 callback(data);
                             }
                             else
@@ -121,12 +121,12 @@
                         editable:true,
                         anchor:"AutoDefault",
                         endpoint:"Blank",
-                        connector: ["Orthogonal", { cornerRadius: 3 } ],
+                        connector: {type:"Orthogonal", options:{ cornerRadius: 3 } },
                         paintStyle: { strokeWidth: 2, stroke: "rgb(132, 172, 179)", outlineWidth: 3, outlineStroke: "transparent" },	//	paint style for this edge type.
                         hoverPaintStyle: { strokeWidth: 2, stroke: "rgb(67,67,67)" }, // hover paint style for this edge type.
                         events: {
                             click:function(p) {
-                                renderer.startEditing(p.edge, {
+                                edgeEditor.startEditing(p.edge, {
                                     deleteButton:true,
                                     onMaybeDelete:function(edge, connection, doDelete) {
                                         dialogs.show({
@@ -141,22 +141,22 @@
                             }
                         },
                         overlays: [
-                            [ "Arrow", { location: 1, width: 10, length: 10 }]
+                            { type:"Arrow", options:{ location: 1, width: 10, length: 10 }}
                         ]
                     },
                     "response":{
                         parent:"default",
                         overlays:[
-                            [
-                                "Label", {
+                            {
+                                type: "Label", options: {
                                     label: "${label}",
-                                    events:{
-                                        click:function(params) {
+                                    events: {
+                                        click: function (params) {
                                             _editLabel(params.edge);
                                         }
                                     }
                                 }
-                            ]
+                            }
                         ]
                     }
                 },
@@ -185,7 +185,7 @@
             events: {
                 canvasClick: function (e) {
                     toolkit.clearSelection();
-                    renderer.stopEditing();
+                    edgeEditor.stopEditing();
                 },
                 edgeAdded:function(params) {
                     if (params.addedByMouse) {
@@ -193,22 +193,23 @@
                     }
                 }
             },
-            miniview: {
-                container: miniviewElement
-            },
             lassoInvert:true,
             lassoEdges:true,
-            elementsDroppable:true,
             consumeRightClick: false,
             dragOptions: {
                 filter: ".jtk-draw-handle, .node-action, .node-action i, .connect",
                 magnetize:true
-            }
+            },
+            plugins:[
+                { type: "miniview", options: {container: miniviewElement } }
+            ]
         });
 
-        var datasetView = new jsPlumbSyntaxHighlighter(toolkit, ".jtk-demo-dataset");
+        var edgeEditor = new jsPlumbToolkitConnectorEditors.EdgePathEditor(renderer);
 
-        var undoredo = window.undoredo = new jsPlumbToolkitUndoRedo({
+        var datasetView = new jsPlumbToolkitSyntaxHighlighter.ToolkitSyntaxHighlighter(toolkit, ".jtk-demo-dataset");
+
+        var undoredo = window.undoredo = new jsPlumbToolkitUndoRedo.Manager({
             surface:renderer,
             onChange:function(undo, undoSize, redoSize) {
                 controls.setAttribute("can-undo", undoSize > 0);
@@ -314,7 +315,7 @@
         //  selector: css3 selector identifying elements inside `source` that ae draggable
         //  dataGenerator: this function takes a DOM element and returns some default data for a node of the type represented by the element.
 
-        new SurfaceDropManager({
+        jsPlumbToolkitDrop.createSurfaceManager({
             source:nodePalette,
             selector:"div",
             surface:renderer,

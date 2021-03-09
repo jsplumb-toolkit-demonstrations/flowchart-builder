@@ -1,12 +1,14 @@
 {
     "dependencies": {
-        "@jsplumb/toolkit": "file:./jsplumbtoolkit.tgz",
-        "@jsplumb/undo-redo": "file:./jsplumbtoolkit-undo-redo.tgz",
-        "@jsplumb/drop": "file:./jsplumbtoolkit-drop.tgz",
-        "@jsplumb/labels": "file:./jsplumbtoolkit-labels.tgz",
-        "@jsplumb/connector-editors": "file:./jsplumbtoolkit-connector-editors.tgz",
-        "@jsplumb/syntax-highlighter": "file:./jsplumbtoolkit-syntax-highlighter.tgz",
-        "@jsplumb/demo-support": "file:./jsplumbtoolkit-demo-support.tgz",
-        "@jsplumb/print": "file:./jsplumbtoolkit-print.tgz"
+        "@jsplumbtoolkit/core": "file:./jsplumbtoolkit-core.tgz",
+        "@jsplumbtoolkit/browser-ui": "file:./jsplumbtoolkit-browser-ui.tgz",
+        "@jsplumbtoolkit/undo-redo": "file:./jsplumbtoolkit-undo-redo.tgz",
+        "@jsplumbtoolkit/drop": "file:./jsplumbtoolkit-drop.tgz",
+        "@jsplumbtoolkit/labels": "file:./jsplumbtoolkit-labels.tgz",
+        "@jsplumbtoolkit/connector-editors": "file:./jsplumbtoolkit-connector-editors.tgz",
+        "@jsplumbtoolkit/print": "file:./jsplumbtoolkit-print.tgz",
+        "@jsplumbtoolkit/dialogs": "file:./jsplumbtoolkit-dialogs.tgz",
+        "@jsplumb/json-syntax-highlighter": "^1.0.2",
+        "@jsplumb/toolkit-demo-support": "^1.0.0"
     }
 }
