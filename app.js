@@ -227,7 +227,7 @@
 
         // Load the data.
         toolkit.load({
-            url: "data/copyright.json",
+            url: "./copyright.json",
             onload:function() {
                 renderer.zoomToFit();
             }
