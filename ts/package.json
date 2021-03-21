@@ -1,0 +1,46 @@
+{
+  "name": "flowchart-builder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "demo.js",
+  "scripts": {
+    "rollup": "rollup -c rollup.config.js",
+    "tsc": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jsplumb-toolkit-demonstrations/flowchart-builder.git"
+  },
+  "author": "jsPlumb <hello@jsplumbtoolkit.com> (https://jsplumbtoolkit.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jsplumb-toolkit-demonstrations/flowchart-builder/issues"
+  },
+  "homepage": "https://github.com/jsplumb-toolkit-demonstrations/flowchart-builder#readme",
+  "dependencies": {
+    "@jsplumbtoolkit/core": "file:../jsplumbtoolkit-core.tgz",
+    "@jsplumbtoolkit/browser-ui": "file:../jsplumbtoolkit-browser-ui.tgz",
+    "@jsplumbtoolkit/undo-redo": "file:../jsplumbtoolkit-undo-redo.tgz",
+    "@jsplumbtoolkit/drop": "file:../jsplumbtoolkit-drop.tgz",
+    "@jsplumbtoolkit/labels": "file:../jsplumbtoolkit-labels.tgz",
+    "@jsplumbtoolkit/connector-editors": "file:../jsplumbtoolkit-connector-editors.tgz",
+    "@jsplumbtoolkit/print": "file:../jsplumbtoolkit-print.tgz",
+    "@jsplumbtoolkit/dialogs": "file:../jsplumbtoolkit-dialogs.tgz",
+    "@jsplumb/json-syntax-highlighter": "^1.0.2",
+    "@jsplumb/toolkit-demo-support": "^1.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "@babel/preset-typescript": "^7.3.3",
+    "@rollup/plugin-babel": "^5.2.1",
+    "@rollup/plugin-commonjs": "^15.0.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "babel-loader": "^8.0.6",
+    "rollup": "^2.26.11",
+    "typescript": "~3.4.0"
+  }
+}

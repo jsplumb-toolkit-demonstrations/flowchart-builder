@@ -1,0 +1,71 @@
+<script type="jtk" id="tmplStart">
+    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-start">
+        <div style="position:relative">
+            <svg:svg width="${w}" height="${h}">
+                <svg:ellipse cx="${w/2}" cy="${h/2}" rx="${(w/2) - 10}" ry="${(h/2) - 10}"/>
+                <svg:text text-anchor="middle" x="${ w / 2 }" y="${ h / 2 }" dominant-baseline="central">${text}</svg:text>
+            </svg:svg>
+        </div>
+        <div class="drag-start connect"></div>
+        <jtk-source port-type="start" filter=".connect"/>
+    </div>
+</script>
+
+<script type="jtk" id="tmplAction">
+    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-action">
+        <div style="position:relative">
+            <svg:svg width="${w}" height="${h}">
+                <svg:rect x="10" y="10" width="${w-20}" height="${h-20}"/>
+                <svg:text text-anchor="middle" x="${w/2}" y="${h/2}" dominant-baseline="central">${text}</svg:text>
+            </svg:svg>
+        </div>
+        <div class="node-edit node-action"/>
+        <div class="node-delete node-action delete"/>
+        <div class="drag-start connect"></div>
+        <jtk-target port-type="target"/>
+        <jtk-source port-type="source" filter=".connect"/>
+    </div>
+</script>
+
+<script type="jtk" id="tmplQuestion">
+    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-question">
+        <div style="position:relative">
+            <svg:svg width="${w}" height="${h}">
+                <svg:path d="M ${w/2} 10 L ${w-10} ${h/2} L ${w/2} ${h-10} L 10 ${h/2} Z"/>
+                <svg:text text-anchor="middle" x="${w/2}" y="${h/2}" dominant-baseline="central">${text}</svg:text>
+            </svg:svg>
+        </div>
+        <div class="node-edit node-action"/>
+        <div class="node-delete node-action delete"/>
+        <div class="drag-start connect"></div>
+        <jtk-source port-type="source" filter=".connect"/>
+        <jtk-target port-type="target"/>
+    </div>
+</script>
+
+<script type="jtk" id="tmplOutput">
+    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-output">
+        <div style="position:relative">
+            <svg:svg width="${w}" height="${h}">
+                <svg:rect x="10" y="10" width="${w-20}" height="${h-20}"/>
+                <svg:text text-anchor="middle" x="${w/2}" y="${h/2}" dominant-baseline="central">${text}</svg:text>
+            </svg:svg>
+        </div>
+        <div class="node-edit node-action"/>
+        <div class="node-delete node-action delete"/>
+        <jtk-target port-type="target"/>
+    </div>
+</script>
+
+<!-- edit text (question or action or output or edge label) -->
+<script type="jtk" class="dlg" id="dlgText" title="Enter Text">
+    <input type="text" size="50" jtk-focus jtk-att="text" value="${text}" jtk-commit="true"/>
+</script>
+
+<script type="jtk" class="dlg" id="dlgConfirm" title="Please Confirm">
+    ${msg}?
+</script>
+
+<script type="jtk" class="dlg" id="dlgMessage" title="Message" cancel="false">
+    ${msg}
+</script>
