@@ -206,7 +206,7 @@
             }
         });
 
-        var datasetView = jsPlumbSyntaxHighlighter.newInstance(toolkit, ".jtk-demo-dataset");
+        var datasetView = jsPlumbToolkitSyntaxHighlighter.newInstance(toolkit, ".jtk-demo-dataset");
 
         var undoredo = window.undoredo = new jsPlumbToolkitUndoRedo({
             surface:renderer,
