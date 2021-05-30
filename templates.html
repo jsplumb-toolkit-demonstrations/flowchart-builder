@@ -6,13 +6,12 @@
                 <svg:text text-anchor="middle" x="${ w / 2 }" y="${ h / 2 }" dominant-baseline="central">${text}</svg:text>
             </svg:svg>
         </div>
-        <div class="drag-start connect"></div>
-        <jtk-source port-type="start" filter=".connect"/>
+        <div class="drag-start connect" data-jtk-source="true" data-jtk-port-type="source"></div>
     </div>
 </script>
 
 <script type="jtk" id="tmplAction">
-    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-action">
+    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-action" data-jtk-target="true" data-jtk-target-port-type="target">
         <div style="position:relative">
             <svg:svg width="${w}" height="${h}">
                 <svg:rect x="10" y="10" width="${w-20}" height="${h-20}"/>
@@ -21,14 +20,12 @@
         </div>
         <div class="node-edit node-action"/>
         <div class="node-delete node-action delete"/>
-        <div class="drag-start connect"></div>
-        <jtk-target port-type="target"/>
-        <jtk-source port-type="source" filter=".connect"/>
+        <div class="drag-start connect" data-jtk-source="true" data-jtk-port-type="source"></div>
     </div>
 </script>
 
 <script type="jtk" id="tmplQuestion">
-    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-question">
+    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-question" data-jtk-target="true" data-jtk-target-port-type="target">
         <div style="position:relative">
             <svg:svg width="${w}" height="${h}">
                 <svg:path d="M ${w/2} 10 L ${w-10} ${h/2} L ${w/2} ${h-10} L 10 ${h/2} Z"/>
@@ -37,14 +34,12 @@
         </div>
         <div class="node-edit node-action"/>
         <div class="node-delete node-action delete"/>
-        <div class="drag-start connect"></div>
-        <jtk-source port-type="source" filter=".connect"/>
-        <jtk-target port-type="target"/>
+        <div class="drag-start connect" data-jtk-source="true" data-jtk-port-type="source"></div>
     </div>
 </script>
 
 <script type="jtk" id="tmplOutput">
-    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-output">
+    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-output" data-jtk-target="true" data-jtk-target-port-type="target">
         <div style="position:relative">
             <svg:svg width="${w}" height="${h}">
                 <svg:rect x="10" y="10" width="${w-20}" height="${h-20}"/>
@@ -53,7 +48,6 @@
         </div>
         <div class="node-edit node-action"/>
         <div class="node-delete node-action delete"/>
-        <jtk-target port-type="target"/>
     </div>
 </script>
 
