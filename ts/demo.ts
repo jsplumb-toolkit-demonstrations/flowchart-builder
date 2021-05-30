@@ -1,20 +1,18 @@
-import {ready, newInstance, SurfaceRenderOptions, Surface, DrawingToolsPlugin, MiniviewPlugin } from "@jsplumbtoolkit/browser-ui"
-import { Dialogs } from "@jsplumbtoolkit/dialogs"
-import {Edge, Vertex} from "@jsplumbtoolkit/core"
+import {ready, newInstance, SurfaceRenderOptions, Surface, DrawingToolsPlugin, MiniviewPlugin, EVENT_TAP } from "@jsplumbtoolkit/browser-ui"
+import * as Dialogs from "@jsplumbtoolkit/dialogs"
+import {Edge, Vertex, uuid, ObjectInfo, Connection, forEach} from "@jsplumbtoolkit/core"
 import { EdgePathEditor } from "@jsplumbtoolkit/connector-editors"
 import { ToolkitSyntaxHighlighter } from "@jsplumb/json-syntax-highlighter"
-import { Manager } from "@jsplumbtoolkit/undo-redo"
-import { EVENT_TAP, Connection, forEach } from "@jsplumbtoolkit/core"
 import { createSurfaceManager } from "@jsplumbtoolkit/drop"
 import { registerHandler } from "@jsplumbtoolkit/print"
-
+import { newInstance as createUndoRedoManager } from "@jsplumbtoolkit/undo-redo"
 
 ready(() => {
 
 
 // ------------------------- dialogs -------------------------------------
 
-        const dialogs = new Dialogs({
+        const dialogs = Dialogs.newInstance({
             selector: ".dlg"
         });
 
@@ -40,7 +38,7 @@ ready(() => {
                             // and it was at least 2 chars
                             if (data.text.length >= 2) {
                                 // set an id and continue.
-                                data.id = toolkit.uuid();
+                                data.id = uuid()
                                 callback(data);
                             }
                             else
@@ -85,38 +83,36 @@ ready(() => {
         // Instruct the toolkit to render to the 'canvas' element. We pass in a view of nodes, edges and ports, which
         // together define the look and feel and behaviour of this renderer.  Note that we can have 0 - N renderers
         // assigned to one instance of the Toolkit..
-        const renderer:Surface = toolkit.render({
-            container: canvasElement,
+        const renderer:Surface = toolkit.render(canvasElement, {
             view: {
                 nodes: {
                     "start": {
-                        template: "tmplStart"
+                        templateId: "tmplStart"
                     },
                     "selectable": {
                         events: {
-                            click: (params:{obj:Vertex}) => {
+                            tap: (params:{obj:Vertex}) => {
                                 toolkit.toggleSelection(params.obj);
                             }
                         }
                     },
                     "question": {
                         parent: "selectable",
-                        template: "tmplQuestion"
+                        templateId: "tmplQuestion"
                     },
                     "action": {
                         parent: "selectable",
-                        template: "tmplAction"
+                        templateId: "tmplAction"
                     },
                     "output":{
                         parent:"selectable",
-                        template:"tmplOutput"
+                        templateId:"tmplOutput"
                     }
                 },
                 // There are two edge types defined - 'yes' and 'no', sharing a common
                 // parent.
                 edges: {
                     "default": {
-                        editable:true,
                         anchor:"AutoDefault",
                         endpoint:"Blank",
                         connector: {type:"Orthogonal", options:{ cornerRadius: 3 } },
@@ -126,7 +122,7 @@ ready(() => {
                             click:(p:any) => {
                                 edgeEditor.startEditing(p.edge, {
                                     deleteButton:true,
-                                    onMaybeDelete:(edge:Edge, connection:Connection, doDelete:Function) => {
+                                    onMaybeDelete:(edge:Edge, connection:Connection, doDelete:(data:Record<string, any>)=>any) => {
                                         dialogs.show({
                                             id: "dlgConfirm",
                                             data: {
@@ -135,7 +131,7 @@ ready(() => {
                                             onOK: doDelete
                                         });
                                     }
-                                });
+                                })
                             }
                         },
                         overlays: [
@@ -182,12 +178,12 @@ ready(() => {
             },
             events: {
                 canvasClick: (e:Event) => {
-                    toolkit.clearSelection();
-                    edgeEditor.stopEditing();
+                    toolkit.clearSelection()
+                    edgeEditor.stopEditing()
                 },
-                edgeAdded:(params:any) => {
+                "edge:add":(params:{edge:Edge, addedByMouse?:boolean}) => {
                     if (params.addedByMouse) {
-                        _editLabel(params.edge, true);
+                        _editLabel(params.edge, true)
                     }
                 }
             },
@@ -195,34 +191,34 @@ ready(() => {
             lassoEdges:true,
             consumeRightClick: false,
             dragOptions: {
-                filter: ".jtk-draw-handle, .node-action, .node-action i, .connect",
+                filter: ".jtk-draw-handle, .node-action, .node-action i",
                 magnetize:true
             },
             plugins:[
                 { type: MiniviewPlugin.type, options: {container: miniviewElement } },
                 DrawingToolsPlugin.type
             ]
-        } as SurfaceRenderOptions);
+        } as SurfaceRenderOptions)
 
-        const edgeEditor = new EdgePathEditor(renderer);
+        const edgeEditor = new EdgePathEditor(renderer)
 
-        new ToolkitSyntaxHighlighter(toolkit, ".jtk-demo-dataset");
+        new ToolkitSyntaxHighlighter(toolkit, ".jtk-demo-dataset")
 
-        const undoredo = new Manager({
+        const undoredo = createUndoRedoManager({
             surface:renderer,
             onChange:(undo:any, undoSize:number, redoSize:number) => {
-                controls.setAttribute("can-undo", undoSize > 0 ? "true" : "false");
-                controls.setAttribute("can-redo", redoSize > 0 ? "true" : "false");
+                controls.setAttribute("can-undo", undoSize > 0 ? "true" : "false")
+                controls.setAttribute("can-redo", redoSize > 0 ? "true" : "false")
             },
             compound:true
-        });
+        })
 
         renderer.on(controls, EVENT_TAP, "[undo]",  () => {
-            undoredo.undo();
+            undoredo.undo()
         })
 
         renderer.on(controls, EVENT_TAP, "[redo]", () => {
-            undoredo.redo();
+            undoredo.redo()
         })
 
         // Load the data.
@@ -243,28 +239,27 @@ ready(() => {
         })
 
         // pan mode/select mode
-        renderer.on(controls, EVENT_TAP, "[mode]", (e:Event) => {
-            //renderer.setMode(this.getAttribute("mode"));
+        renderer.on(controls, EVENT_TAP, "[mode]", (e:Event, eventTarget:HTMLElement) => {
+            renderer.setMode(eventTarget.getAttribute("mode"))
         });
 
         // on home button click, zoom content to fit.
-        renderer.on(controls, EVENT_TAP, "[reset]",  () => {
-            toolkit.clearSelection();
-            renderer.zoomToFit();
-        });
+        renderer.on(controls, EVENT_TAP, "[reset]",  (e:Event, eventTarget:HTMLElement) => {
+            toolkit.clearSelection()
+            renderer.zoomToFit()
+        })
 
         // on clear button, perhaps clear the Toolkit
-        renderer.on(controls, EVENT_TAP, "[clear]", () => {
+        renderer.on(controls, EVENT_TAP, "[clear]", (e:Event, eventTarget:HTMLElement) => {
             if (toolkit.getNodeCount() === 0 || confirm("Clear flowchart?")) {
-                toolkit.clear();
+                toolkit.clear()
             }
-        });
+        })
 
         //
         // node delete button.
         //
-        renderer.on(canvasElement, "click", ".node-delete",  (e:Event) => {
-            const info = renderer.getObjectInfo<Vertex>(e.target || e.srcElement)
+        renderer.bindModelEvent(EVENT_TAP, ".node-delete",  (event:Event, eventTarget:HTMLElement, info:ObjectInfo<Vertex>) => {
             dialogs.show({
                 id: "dlgConfirm",
                 data: {
@@ -276,13 +271,14 @@ ready(() => {
             })
         })
 
+        //
         // change a question or action's label
-        renderer.on(canvasElement, EVENT_TAP, ".node-edit", (e:Event) => {
-            // getObjectInfo is a method that takes some DOM element (this function's `this` is
-            // set to the element that fired the event) and returns the toolkit data object that
-            // relates to the element. it ascends through parent nodes until it finds a node that is
-            // registered with the toolkit.
-            const info = renderer.getObjectInfo<Vertex>(e.target || e.srcElement)
+        //
+        // bindModelEvent is a new method in 4.x that attaches a delegated event listener to the container element, and when a matching event
+        // occurs, it passes back the event, the event target, and the associated model object. Events occur on DOM elements that are children of the element
+        // representing a model object, and this method abstracts out the decoding of the appropriate model object for you.
+        //
+        renderer.bindModelEvent(EVENT_TAP, ".node-edit", (event:Event, eventTarget:HTMLElement, info:ObjectInfo<Vertex>) => {
             dialogs.show({
                 id: "dlgText",
                 data: info.obj.data,

@@ -87,12 +87,11 @@
         // Instruct the toolkit to render to the 'canvas' element. We pass in a view of nodes, edges and ports, which
         // together define the look and feel and behaviour of this renderer.  Note that we can have 0 - N renderers
         // assigned to one instance of the Toolkit..
-        var renderer = window.renderer = toolkit.render({
-            container: canvasElement,
+        var renderer = window.renderer = toolkit.render(canvasElement, {
             view: {
                 nodes: {
                     "start": {
-                        template: "tmplStart"
+                        templateId: "tmplStart"
                     },
                     "selectable": {
                         events: {
@@ -103,15 +102,15 @@
                     },
                     "question": {
                         parent: "selectable",
-                        template: "tmplQuestion"
+                        templateId: "tmplQuestion"
                     },
                     "action": {
                         parent: "selectable",
-                        template: "tmplAction"
+                        templateId: "tmplAction"
                     },
                     "output":{
                         parent:"selectable",
-                        template:"tmplOutput"
+                        templateId:"tmplOutput"
                     }
                 },
                 // There are two edge types defined - 'yes' and 'no', sharing a common
@@ -121,7 +120,7 @@
                         editable:true,
                         anchor:"AutoDefault",
                         endpoint:"Blank",
-                        connector: {type:"Orthogonal", options:{ cornerRadius: 3 } },
+                        connector: {type:"Orthogonal", options:{ cornerRadius: 3, midpoint:"${midpoint}" } },
                         paintStyle: { strokeWidth: 2, stroke: "rgb(132, 172, 179)", outlineWidth: 3, outlineStroke: "transparent" },	//	paint style for this edge type.
                         hoverPaintStyle: { strokeWidth: 2, stroke: "rgb(67,67,67)" }, // hover paint style for this edge type.
                         events: {
@@ -148,7 +147,8 @@
                         parent:"default",
                         overlays:[
                             {
-                                type: "Label", options: {
+                                type: "Label",
+                                options: {
                                     label: "${label}",
                                     events: {
                                         click: function (params) {
@@ -187,7 +187,7 @@
                     toolkit.clearSelection();
                     edgeEditor.stopEditing();
                 },
-                edgeAdded:function(params) {
+                "edge:add":function(params) {
                     if (params.addedByMouse) {
                         _editLabel(params.edge, true);
                     }
@@ -205,11 +205,101 @@
             ]
         });
 
-        var edgeEditor = new jsPlumbToolkitConnectorEditors.EdgePathEditor(renderer);
+// ----------------------------------------------------------------------------------------------------------------------
+
+        /*
+        a TEST of addSourceSelector. this is an alternative to the `jtk-source` elements in the templates.
+
+           currently the `jtk-source` element supports a few attributes:
+
+            port-type  - the type of port represented by the source
+            port-id    - the id of the port represented by the source
+            edge-type  - the type of edge to create when dragging from this source
+            scope      - the scope for the port. used when matching draggables.
+
+        All of those attributes are optional. With addSourceSelector we want, of course, to still support these things.
+
+        But we want to support them in two ways - firstly, on the element in the html:
+
+        <div class=".connect" data-jtk-port-id="foo" data-port-type="portType" ....>...</div>
+
+        These should be picked up by the addSourceSelector mechanism and set as data for the endpoint that is created. Currently
+        there is an `extract` mechanism supported, but that only sets data on the connection; something needs to be done about that.
+
+        Secondly, we want to support these in the definition, kind of like:
+
+        renderer.jsplumb.addSourceSelector(".connect", {
+            portType:"portType",
+            portId:"foo"
+        })
+
+        but we dont in fact want to make people access the community instance. instead it should be part of the render:
+
+        instance.render(container, {
+            ...
+            sourceSelectors:{
+                ".connect":{
+                    portType:"portType"
+                }
+            }
+        }
+
+        is that any good? or can it instead/also be mapped in the view?:
+
+        ports: {
+                    "start": {
+                        edgeType: "default"
+                    },
+                    "source": {
+                        maxConnections: -1,
+                        edgeType: "response",
+                        sourceSelector:".connect" <--------------------------
+                    },
+
+                    "target": {
+                        maxConnections: -1,
+                        isTarget: true,
+                        dropOptions: {
+                            hoverClass: "connection-drop"
+                        }
+                    }
+                }
+
+          I kind of like that, but how would the fact that a whole node is a target be represented? presumably as a `targetSelector`
+          on the node definition in the view, which is not so appealing. And then there is this issue:
+
+          <jtk-target port-type="target"/>
+
+          ...the target, which is the whole node, actually maps to a logical port.  So maybe this then:
+
+          instance.render(container, {
+            ...
+
+            selectors:{
+                ".connect":{
+                    portType:"portType",
+                    isSource:true
+                },
+                ".flowchart-object":{
+                    portType:"target",
+                    isTarget:true
+                }
+            }
+
+            ...
+        }
+
+         */
+
+        renderer.jsplumb.addSourceSelector(".connect")
+
+// ----------------------------------------------------------------------------------------------------------------------
+
+        var edgeEditor = jsPlumbToolkitConnectorEditors.newInstance(renderer);
 
         var datasetView = new jsPlumbToolkitSyntaxHighlighter.ToolkitSyntaxHighlighter(toolkit, ".jtk-demo-dataset");
 
-        var undoredo = window.undoredo = new jsPlumbToolkitUndoRedo.Manager({
+        var undoredo = jsPlumbToolkitUndoRedo.newInstance({
             surface:renderer,
             onChange:function(undo, undoSize, redoSize) {
                 controls.setAttribute("can-undo", undoSize > 0);
@@ -236,8 +326,8 @@
 
         // listener for mode change on renderer.
         renderer.bind("modeChanged", function (mode) {
-            jsPlumb.removeClass(controls.querySelectorAll("[mode]"), "selected-mode");
-            jsPlumb.addClass(controls.querySelectorAll("[mode='" + mode + "']"), "selected-mode");
+            // jsPlumb.removeClass(controls.querySelectorAll("[mode]"), "selected-mode");
+            // jsPlumb.addClass(controls.querySelectorAll("[mode='" + mode + "']"), "selected-mode");
         });
 
         // pan mode/select mode
