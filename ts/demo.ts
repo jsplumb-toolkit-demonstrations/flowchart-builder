@@ -1,11 +1,32 @@
-import {ready, newInstance, SurfaceRenderOptions, Surface, DrawingToolsPlugin, MiniviewPlugin, EVENT_TAP } from "@jsplumbtoolkit/browser-ui"
+import {
+    ready,
+    newInstance,
+    SurfaceRenderOptions,
+    Surface,
+    EVENT_TAP,
+    EVENT_CANVAS_CLICK,
+    EVENT_SURFACE_MODE_CHANGED
+} from "@jsplumbtoolkit/browser-ui"
 import * as Dialogs from "@jsplumbtoolkit/dialogs"
-import {Edge, Vertex, uuid, ObjectInfo, Connection, forEach} from "@jsplumbtoolkit/core"
+import {Edge, Vertex, ObjectInfo, EVENT_EDGE_ADDED, AbsoluteLayout} from "@jsplumbtoolkit/core"
+import { uuid, forEach } from "@jsplumb/util"
+
+// TODO these imports should come from jtk/browser-ui
+import { Connection, BlankEndpoint, ArrowOverlay, LabelOverlay } from "@jsplumb/core"
+import { AnchorLocations } from "@jsplumb/common"
+
 import { EdgePathEditor } from "@jsplumbtoolkit/connector-editors"
 import { ToolkitSyntaxHighlighter } from "@jsplumb/json-syntax-highlighter"
 import { createSurfaceManager } from "@jsplumbtoolkit/drop"
 import { registerHandler } from "@jsplumbtoolkit/print"
 import { newInstance as createUndoRedoManager } from "@jsplumbtoolkit/undo-redo"
+import {DrawingToolsPlugin} from "@jsplumbtoolkit/plugin-drawing-tools"
+import {MiniviewPlugin} from "@jsplumbtoolkit/plugin-miniview"
+import {OrthogonalConnector} from "@jsplumbtoolkit/connector-orthogonal"
+
+import * as ConnectorEditorOrthogonal from "@jsplumbtoolkit/connector-editors-orthogonal"
+import {LassoPlugin} from "@jsplumbtoolkit/plugin-lasso"
+ConnectorEditorOrthogonal.initialize()
 
 ready(() => {
 
@@ -113,9 +134,9 @@ ready(() => {
                 // parent.
                 edges: {
                     "default": {
-                        anchor:"AutoDefault",
-                        endpoint:"Blank",
-                        connector: {type:"Orthogonal", options:{ cornerRadius: 3 } },
+                        anchor:AnchorLocations.AutoDefault,
+                        endpoint:BlankEndpoint.type,
+                        connector: {type:OrthogonalConnector.type, options:{ cornerRadius: 3 } },
                         paintStyle: { strokeWidth: 2, stroke: "rgb(132, 172, 179)", outlineWidth: 3, outlineStroke: "transparent" },	//	paint style for this edge type.
                         hoverPaintStyle: { strokeWidth: 2, stroke: "rgb(67,67,67)" }, // hover paint style for this edge type.
                         events: {
@@ -135,14 +156,15 @@ ready(() => {
                             }
                         },
                         overlays: [
-                            { type:"Arrow", options:{ location: 1, width: 10, length: 10 }}
+                            { type:ArrowOverlay.type, options:{ location: 1, width: 10, length: 10 }}
                         ]
                     },
                     "response":{
                         parent:"default",
                         overlays:[
                             {
-                                type: "Label", options: {
+                                type: LabelOverlay.type,
+                                options: {
                                     label: "${label}",
                                     events: {
                                         click: (params:any) => {
@@ -174,29 +196,39 @@ ready(() => {
             },
             // Layout the nodes using an absolute layout
             layout: {
-                type: "Absolute"
+                type: AbsoluteLayout.type
             },
             events: {
-                canvasClick: (e:Event) => {
+                [EVENT_CANVAS_CLICK]: (e:Event) => {
                     toolkit.clearSelection()
                     edgeEditor.stopEditing()
                 },
-                "edge:add":(params:{edge:Edge, addedByMouse?:boolean}) => {
+                [EVENT_EDGE_ADDED]:(params:{edge:Edge, addedByMouse?:boolean}) => {
                     if (params.addedByMouse) {
                         _editLabel(params.edge, true)
                     }
                 }
             },
-            lassoInvert:true,
-            lassoEdges:true,
             consumeRightClick: false,
             dragOptions: {
                 filter: ".jtk-draw-handle, .node-action, .node-action i",
                 magnetize:true
             },
             plugins:[
-                { type: MiniviewPlugin.type, options: {container: miniviewElement } },
-                DrawingToolsPlugin.type
+                {
+                    type: MiniviewPlugin.type,
+                    options: {
+                        container: miniviewElement
+                    }
+                },
+                DrawingToolsPlugin.type,
+                {
+                    type:LassoPlugin.type,
+                    options: {
+                        lassoInvert:true,
+                        lassoEdges:true
+                    }
+                }
             ]
         } as SurfaceRenderOptions)
 
@@ -230,7 +262,7 @@ ready(() => {
         })
 
         // listener for mode change on renderer.
-        renderer.bind("modeChanged", (mode:string) => {
+        renderer.bind(EVENT_SURFACE_MODE_CHANGED, (mode:string) => {
             forEach(controls.querySelectorAll("[mode]"), (e:Element) => {
                 renderer.removeClass(e, "selected-mode")
             })
