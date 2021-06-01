@@ -2,21 +2,9 @@
 
     jsPlumbToolkitBrowserUI.ready(function () {
 
-        // ------------------------ toolkit setup ------------------------------------
-
-        // This function is what the toolkit will use to get an ID from a node.
-        var idFunction = function (n) {
-            return n.id;
-        };
-
-        // This function is what the toolkit will use to get the associated type from a node.
-        var typeFunction = function (n) {
-            return n.type;
-        };
-
 // ------------------------- dialogs -------------------------------------
 
-        var dialogs = new jsPlumbToolkitDialogs.Dialogs({
+        var dialogs = jsPlumbToolkitDialogs.newInstance({
             selector: ".dlg"
         });
 
@@ -31,9 +19,8 @@
 
         // Declare an instance of the Toolkit, and supply the functions we will use to get ids and types from nodes.
         var toolkit = jsPlumbToolkitBrowserUI.newInstance({
-            idFunction: idFunction,
-            typeFunction: typeFunction,
             nodeFactory: function (type, data, callback) {
+                debugger
                 dialogs.show({
                     id: "dlgText",
                     title: "Enter " + type + " name:",
@@ -187,7 +174,7 @@
                     toolkit.clearSelection();
                     edgeEditor.stopEditing();
                 },
-                "edge:add":function(params) {
+                "edge:added":function(params) {
                     if (params.addedByMouse) {
                         _editLabel(params.edge, true);
                     }
@@ -201,99 +188,11 @@
                 magnetize:true
             },
             plugins:[
-                { type: "miniview", options: {container: miniviewElement } }
+                { type: "miniview", options: {container: miniviewElement } },
+                "drawingTools",
+                { type: "lasso", options: { } }
             ]
         });
-
-// ----------------------------------------------------------------------------------------------------------------------
-
-        /*
-        a TEST of addSourceSelector. this is an alternative to the `jtk-source` elements in the templates.
-
-           currently the `jtk-source` element supports a few attributes:
-
-            port-type  - the type of port represented by the source
-            port-id    - the id of the port represented by the source
-            edge-type  - the type of edge to create when dragging from this source
-            scope      - the scope for the port. used when matching draggables.
-
-        All of those attributes are optional. With addSourceSelector we want, of course, to still support these things.
-
-        But we want to support them in two ways - firstly, on the element in the html:
-
-        <div class=".connect" data-jtk-port-id="foo" data-port-type="portType" ....>...</div>
-
-        These should be picked up by the addSourceSelector mechanism and set as data for the endpoint that is created. Currently
-        there is an `extract` mechanism supported, but that only sets data on the connection; something needs to be done about that.
-
-        Secondly, we want to support these in the definition, kind of like:
-
-        renderer.jsplumb.addSourceSelector(".connect", {
-            portType:"portType",
-            portId:"foo"
-        })
-
-        but we dont in fact want to make people access the community instance. instead it should be part of the render:
-
-        instance.render(container, {
-            ...
-            sourceSelectors:{
-                ".connect":{
-                    portType:"portType"
-                }
-            }
-        }
-
-        is that any good? or can it instead/also be mapped in the view?:
-
-        ports: {
-                    "start": {
-                        edgeType: "default"
-                    },
-                    "source": {
-                        maxConnections: -1,
-                        edgeType: "response",
-                        sourceSelector:".connect" <--------------------------
-                    },
-
-                    "target": {
-                        maxConnections: -1,
-                        isTarget: true,
-                        dropOptions: {
-                            hoverClass: "connection-drop"
-                        }
-                    }
-                }
-
-          I kind of like that, but how would the fact that a whole node is a target be represented? presumably as a `targetSelector`
-          on the node definition in the view, which is not so appealing. And then there is this issue:
-
-          <jtk-target port-type="target"/>
-
-          ...the target, which is the whole node, actually maps to a logical port.  So maybe this then:
-
-          instance.render(container, {
-            ...
-
-            selectors:{
-                ".connect":{
-                    portType:"portType",
-                    isSource:true
-                },
-                ".flowchart-object":{
-                    portType:"target",
-                    isTarget:true
-                }
-            }
-
-            ...
-        }
-
-         */
-
-        renderer.jsplumb.addSourceSelector(".connect")
-
-// ----------------------------------------------------------------------------------------------------------------------
 
         var edgeEditor = jsPlumbToolkitConnectorEditors.newInstance(renderer);
 
@@ -326,8 +225,8 @@
 
         // listener for mode change on renderer.
         renderer.bind("modeChanged", function (mode) {
-            // jsPlumb.removeClass(controls.querySelectorAll("[mode]"), "selected-mode");
-            // jsPlumb.addClass(controls.querySelectorAll("[mode='" + mode + "']"), "selected-mode");
+            renderer.removeClass(controls.querySelectorAll("[mode]"), "selected-mode");
+            renderer.addClass(controls.querySelectorAll("[mode='" + mode + "']"), "selected-mode");
         });
 
         // pan mode/select mode
@@ -347,11 +246,6 @@
                 toolkit.clear();
             }
         });
-
-        // configure Drawing tools.
-        // new jsPlumbToolkit.DrawingTools({
-        //     renderer: renderer
-        // });
 
         //
         // node delete button.
