@@ -5,11 +5,12 @@ import {
     Surface,
     EVENT_TAP,
     EVENT_CANVAS_CLICK,
-    EVENT_SURFACE_MODE_CHANGED
+    EVENT_SURFACE_MODE_CHANGED, SurfaceMode
 } from "@jsplumbtoolkit/browser-ui"
 import * as Dialogs from "@jsplumbtoolkit/dialogs"
 import {Edge, Vertex, ObjectInfo, EVENT_EDGE_ADDED, AbsoluteLayout} from "@jsplumbtoolkit/core"
 import { uuid, forEach } from "@jsplumb/util"
+import { DEFAULT } from "@jsplumb/core"
 
 // TODO these imports should come from jtk/browser-ui
 import { Connection, BlankEndpoint, ArrowOverlay, LabelOverlay } from "@jsplumb/core"
@@ -27,6 +28,15 @@ import {OrthogonalConnector} from "@jsplumbtoolkit/connector-orthogonal"
 import * as ConnectorEditorOrthogonal from "@jsplumbtoolkit/connector-editors-orthogonal"
 import {LassoPlugin} from "@jsplumbtoolkit/plugin-lasso"
 ConnectorEditorOrthogonal.initialize()
+
+const START = "start"
+const OUTPUT = "output"
+const QUESTION = "question"
+const ACTION = "action"
+const SELECTABLE = "selectable"
+const RESPONSE = "response"
+const SOURCE = "source"
+const TARGET = "target"
 
 ready(() => {
 
@@ -76,7 +86,7 @@ ready(() => {
                 // limit edges from start node to 1. if any other type of node, return a payload for the edge.
                 // if there is already a label set for the edge (say, if it was connected programmatically or via
                 // edge undo/redo), this label is ignored.
-                return (node.data.type === "start" && node.getEdges().length > 0) ? false : { label:"..." }
+                return (node.data.type === START && node.getEdges().length > 0) ? false : { label:"..." }
             }
         })
 
@@ -107,33 +117,33 @@ ready(() => {
         const renderer:Surface = toolkit.render(canvasElement, {
             view: {
                 nodes: {
-                    "start": {
+                    [START]: {
                         templateId: "tmplStart"
                     },
-                    "selectable": {
+                    [SELECTABLE]: {
                         events: {
                             tap: (params:{obj:Vertex}) => {
                                 toolkit.toggleSelection(params.obj);
                             }
                         }
                     },
-                    "question": {
-                        parent: "selectable",
+                    [QUESTION]: {
+                        parent: SELECTABLE,
                         templateId: "tmplQuestion"
                     },
-                    "action": {
-                        parent: "selectable",
+                    [ACTION]: {
+                        parent: SELECTABLE,
                         templateId: "tmplAction"
                     },
-                    "output":{
-                        parent:"selectable",
+                    [OUTPUT]:{
+                        parent:SELECTABLE,
                         templateId:"tmplOutput"
                     }
                 },
                 // There are two edge types defined - 'yes' and 'no', sharing a common
                 // parent.
                 edges: {
-                    "default": {
+                    [DEFAULT]: {
                         anchor:AnchorLocations.AutoDefault,
                         endpoint:BlankEndpoint.type,
                         connector: {type:OrthogonalConnector.type, options:{ cornerRadius: 3 } },
@@ -159,8 +169,8 @@ ready(() => {
                             { type:ArrowOverlay.type, options:{ location: 1, width: 10, length: 10 }}
                         ]
                     },
-                    "response":{
-                        parent:"default",
+                    [RESPONSE]:{
+                        parent:DEFAULT,
                         overlays:[
                             {
                                 type: LabelOverlay.type,
@@ -178,25 +188,28 @@ ready(() => {
                 },
 
                 ports: {
-                    "start": {
-                        edgeType: "default"
+                    [START]: {
+                        edgeType: DEFAULT
                     },
-                    "source": {
+                    [SOURCE]: {
                         maxConnections: -1,
-                        edgeType: "response"
+                        edgeType: RESPONSE
                     },
-                    "target": {
+                    [TARGET]: {
                         maxConnections: -1,
-                        isTarget: true,
-                        dropOptions: {
-                            hoverClass: "connection-drop"
-                        }
+                        isTarget: true
                     }
                 }
             },
             // Layout the nodes using an absolute layout
             layout: {
                 type: AbsoluteLayout.type
+            },
+            grid:{
+                size:{
+                    w:50,
+                    h:50
+                }
             },
             events: {
                 [EVENT_CANVAS_CLICK]: (e:Event) => {
@@ -211,8 +224,7 @@ ready(() => {
             },
             consumeRightClick: false,
             dragOptions: {
-                filter: ".jtk-draw-handle, .node-action, .node-action i",
-                magnetize:true
+                filter: ".jtk-draw-handle, .node-action, .node-action i"
             },
             plugins:[
                 {
@@ -229,7 +241,10 @@ ready(() => {
                         lassoEdges:true
                     }
                 }
-            ]
+            ],
+            magnetize:{
+                afterDrag:true
+            }
         } as SurfaceRenderOptions)
 
         const edgeEditor = new EdgePathEditor(renderer)
@@ -272,7 +287,7 @@ ready(() => {
 
         // pan mode/select mode
         renderer.on(controls, EVENT_TAP, "[mode]", (e:Event, eventTarget:HTMLElement) => {
-            renderer.setMode(eventTarget.getAttribute("mode"))
+            renderer.setMode(eventTarget.getAttribute("mode") as SurfaceMode)
         });
 
         // on home button click, zoom content to fit.
@@ -323,7 +338,7 @@ ready(() => {
                     }
                 }
             })
-        });
+        })
 
 // ------------------------ / rendering ------------------------------------
 
@@ -351,7 +366,7 @@ ready(() => {
                     type:el.getAttribute("data-node-type")
                 };
             }
-        });
+        })
 
 // ------------------------ / drag and drop new nodes -----------------
 
