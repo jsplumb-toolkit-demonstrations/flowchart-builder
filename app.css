@@ -139,25 +139,25 @@
 
 /* styles for drag + drop */
 
-.jtk-surface.jtk-drag-active {
+.jtk-surface.jtk-drag-drop-active {
     outline:6px dotted #4ea758 !important;
 }
 
-.jtk-surface.jtk-drag-hover {
+.jtk-surface.jtk-drag-drop-hover {
     outline: 6px solid #f7a45d !important;
 }
 
-svg.jtk-drag-hover, svg.jtk-drag-active {
+svg.jtk-drag-drop-hover, svg.jtk-drag-drop-active {
     outline:none !important;
 }
 
-svg.jtk-drag-active path {
+svg.jtk-drag-drop-active path {
     stroke:#4ea758;
     stroke-width:3px;
     stroke-dasharray:2 0 2 5;
 }
 
-svg.jtk-drag-hover path {
+svg.jtk-drag-drop-hover path {
     stroke:#f7a45d;
     stroke-width:4px;
     stroke-dasharray:0;
