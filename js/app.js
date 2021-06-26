@@ -198,22 +198,18 @@
 
         var datasetView = new jsPlumbToolkitSyntaxHighlighter.ToolkitSyntaxHighlighter(toolkit, ".jtk-demo-dataset");
 
-        var undoredo = jsPlumbToolkitUndoRedo.newInstance({
-            surface:renderer,
-            onChange:function(undo, undoSize, redoSize) {
-                controls.setAttribute("can-undo", undoSize > 0);
-                controls.setAttribute("can-redo", redoSize > 0);
-            },
-            compound:true
-        });
+        toolkit.bind("undoredo:update", function(state) {
+            controls.setAttribute("can-undo", state.undoCount > 0 ? "true" : "false")
+            controls.setAttribute("can-redo", state.redoCount > 0 ? "true" : "false")
+        })
 
-        renderer.on(controls, "tap", "[undo]", function () {
-            undoredo.undo();
-        });
+        renderer.on(controls, "tap", "[undo]",  () => {
+            toolkit.undo()
+        })
 
-        renderer.on(controls, "tap", "[redo]", function () {
-            undoredo.redo();
-        });
+        renderer.on(controls, "tap", "[redo]", () => {
+            toolkit.redo()
+        })
 
         // Load the data.
         toolkit.load({

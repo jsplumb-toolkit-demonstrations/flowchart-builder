@@ -7,20 +7,17 @@ import {
     EVENT_CANVAS_CLICK,
     EVENT_SURFACE_MODE_CHANGED, SurfaceMode
 } from "@jsplumbtoolkit/browser-ui"
-import * as Dialogs from "@jsplumbtoolkit/dialogs"
-import {Edge, Vertex, ObjectInfo, EVENT_EDGE_ADDED, AbsoluteLayout} from "@jsplumbtoolkit/core"
-import { uuid, forEach } from "@jsplumb/util"
-import { DEFAULT } from "@jsplumb/core"
 
-// TODO these imports should come from jtk/browser-ui
-import { Connection, BlankEndpoint, ArrowOverlay, LabelOverlay } from "@jsplumb/core"
-import { AnchorLocations } from "@jsplumb/common"
+import * as Dialogs from "@jsplumbtoolkit/dialogs"
+
+import {Edge, Vertex, ObjectInfo, EVENT_EDGE_ADDED, AbsoluteLayout, uuid, forEach, EVENT_UNDOREDO_UPDATE, UndoRedoUpdateParams} from "@jsplumbtoolkit/core"
+
+import { AnchorLocations, DEFAULT, Connection, BlankEndpoint, ArrowOverlay, LabelOverlay } from "@jsplumb/core"
 
 import { EdgePathEditor } from "@jsplumbtoolkit/connector-editors"
 import { ToolkitSyntaxHighlighter } from "@jsplumb/json-syntax-highlighter"
 import { createSurfaceManager } from "@jsplumbtoolkit/drop"
 import { registerHandler } from "@jsplumbtoolkit/print"
-import { newInstance as createUndoRedoManager } from "@jsplumbtoolkit/undo-redo"
 import {DrawingToolsPlugin} from "@jsplumbtoolkit/plugin-drawing-tools"
 import {MiniviewPlugin} from "@jsplumbtoolkit/plugin-miniview"
 import {OrthogonalConnector} from "@jsplumbtoolkit/connector-orthogonal"
@@ -251,21 +248,17 @@ ready(() => {
 
         new ToolkitSyntaxHighlighter(toolkit, ".jtk-demo-dataset")
 
-        const undoredo = createUndoRedoManager({
-            surface:renderer,
-            onChange:(undo:any, undoSize:number, redoSize:number) => {
-                controls.setAttribute("can-undo", undoSize > 0 ? "true" : "false")
-                controls.setAttribute("can-redo", redoSize > 0 ? "true" : "false")
-            },
-            compound:true
+        toolkit.bind(EVENT_UNDOREDO_UPDATE, (state:UndoRedoUpdateParams) => {
+            controls.setAttribute("can-undo", state.undoCount > 0 ? "true" : "false")
+            controls.setAttribute("can-redo", state.redoCount > 0 ? "true" : "false")
         })
 
         renderer.on(controls, EVENT_TAP, "[undo]",  () => {
-            undoredo.undo()
+            toolkit.undo()
         })
 
         renderer.on(controls, EVENT_TAP, "[redo]", () => {
-            undoredo.redo()
+            toolkit.redo()
         })
 
         // Load the data.
