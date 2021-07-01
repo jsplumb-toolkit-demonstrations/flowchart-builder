@@ -18,12 +18,12 @@ import { EdgePathEditor } from "@jsplumbtoolkit/connector-editors"
 import { ToolkitSyntaxHighlighter } from "@jsplumb/json-syntax-highlighter"
 import { createSurfaceManager } from "@jsplumbtoolkit/drop"
 import { registerHandler } from "@jsplumbtoolkit/print"
-import {DrawingToolsPlugin} from "@jsplumbtoolkit/plugin-drawing-tools"
-import {MiniviewPlugin} from "@jsplumbtoolkit/plugin-miniview"
+import {DrawingToolsPlugin} from "@jsplumbtoolkit/browser-ui-plugin-drawing-tools"
+import {MiniviewPlugin} from "@jsplumbtoolkit/browser-ui-plugin-miniview"
 import {OrthogonalConnector} from "@jsplumbtoolkit/connector-orthogonal"
 
 import * as ConnectorEditorOrthogonal from "@jsplumbtoolkit/connector-editors-orthogonal"
-import {LassoPlugin} from "@jsplumbtoolkit/plugin-lasso"
+import {LassoPlugin} from "@jsplumbtoolkit/browser-ui-plugin-lasso"
 ConnectorEditorOrthogonal.initialize()
 
 const START = "start"

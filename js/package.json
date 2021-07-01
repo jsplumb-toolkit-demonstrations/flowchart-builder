@@ -7,9 +7,9 @@
         "@jsplumbtoolkit/dialogs": "^5.0.0-RC1",
         "@jsplumbtoolkit/connector-editors-orthogonal": "^5.0.0-RC1",
         "@jsplumbtoolkit/connector-orthogonal": "^5.0.0-RC1",
-        "@jsplumbtoolkit/plugin-drawing-tools": "^5.0.0-RC1",
-        "@jsplumbtoolkit/plugin-miniview": "^5.0.0-RC1",
-        "@jsplumbtoolkit/plugin-lasso": "^5.0.0-RC1",
+        "@jsplumbtoolkit/browser-ui-plugin-drawing-tools": "^5.0.0-RC1",
+        "@jsplumbtoolkit/browser-ui-plugin-miniview": "^5.0.0-RC1",
+        "@jsplumbtoolkit/browser-ui-plugin-lasso": "^5.0.0-RC1",
         "@jsplumb/json-syntax-highlighter": "^1.0.4",
         "@jsplumb/toolkit-demo-support": "^1.0.0"
     }
