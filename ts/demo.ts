@@ -1,6 +1,4 @@
 import {
-    ready,
-    newInstance,
     SurfaceRenderOptions,
     Surface,
     EVENT_TAP,
@@ -9,6 +7,11 @@ import {
 } from "@jsplumbtoolkit/browser-ui"
 
 import * as Dialogs from "@jsplumbtoolkit/dialogs"
+
+import {
+    ready,
+    newInstance
+} from "@jsplumbtoolkit/browser-ui-vanilla"
 
 import {Edge, Vertex, ObjectInfo, EVENT_EDGE_ADDED, AbsoluteLayout, uuid, forEach, EVENT_UNDOREDO_UPDATE, UndoRedoUpdateParams} from "@jsplumbtoolkit/core"
 
