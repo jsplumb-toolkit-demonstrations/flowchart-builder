@@ -13,9 +13,20 @@ import {
     newInstance
 } from "@jsplumbtoolkit/browser-ui-vanilla"
 
-import {Edge, Vertex, ObjectInfo, EVENT_EDGE_ADDED, AbsoluteLayout, uuid, forEach, EVENT_UNDOREDO_UPDATE, UndoRedoUpdateParams} from "@jsplumbtoolkit/core"
+import {
+    Edge,
+    Vertex,
+    ObjectInfo,
+    AbsoluteLayout,
+    uuid,
+    forEach,
+    EVENT_UNDOREDO_UPDATE,
+    UndoRedoUpdateParams,
+    ObjectData
+} from "@jsplumbtoolkit/core"
 
-import { AnchorLocations, DEFAULT, Connection, BlankEndpoint, ArrowOverlay, LabelOverlay } from "@jsplumb/core"
+import { AnchorLocations, DEFAULT } from "@jsplumb/common"
+import { Connection, BlankEndpoint, ArrowOverlay, LabelOverlay } from "@jsplumb/core"
 
 import { EdgePathEditor } from "@jsplumbtoolkit/connector-editors"
 import { ToolkitSyntaxHighlighter } from "@jsplumb/json-syntax-highlighter"
@@ -27,6 +38,8 @@ import {OrthogonalConnector} from "@jsplumbtoolkit/connector-orthogonal"
 
 import * as ConnectorEditorOrthogonal from "@jsplumbtoolkit/connector-editors-orthogonal"
 import {LassoPlugin} from "@jsplumbtoolkit/browser-ui-plugin-lasso"
+import {CancelFunction} from "@jsplumbtoolkit/dialogs"
+import {consume} from "@jsplumb/browser-ui"
 ConnectorEditorOrthogonal.initialize()
 
 const START = "start"
@@ -38,14 +51,46 @@ const RESPONSE = "response"
 const SOURCE = "source"
 const TARGET = "target"
 
+
 ready(() => {
 
 
 // ------------------------- dialogs -------------------------------------
 
     const dialogs = Dialogs.newInstance({
-        selector: ".dlg"
+        dialogs: {
+            "dlgText":[
+                '<input type="text" size="50" jtk-focus jtk-att="text" value="${text}" jtk-commit="true"/>',
+                'Enter Text',
+                true
+
+            ],
+            "dlgConfirm":[
+                '${msg}',
+                'Please Confirm',
+                true
+            ],
+            "dlgMessage":[
+                '${msg}',
+                "Message",
+                false
+            ]
+        }
     });
+
+    function showEdgeEditDialog(data:ObjectData, continueFunction:Function, abortFunction?:CancelFunction) {
+        dialogs.show({
+            id: "dlgText",
+            data: {
+                text: data.label || ""
+            },
+            onOK: (data:any) => {
+                //toolkit.updateEdge(edge, )
+                continueFunction({ label:data.text || "" })
+            },
+            onCancel:abortFunction
+        })
+    }
 
 // ------------------------- / dialogs ----------------------------------
 
@@ -81,6 +126,10 @@ ready(() => {
                 }
             })
 
+            return true
+        },
+        edgeFactory:(type:string, data:any, continueCallback:Function, abortCallback:CancelFunction) => {
+            showEdgeEditDialog(data, continueCallback, abortCallback)
             return true
         },
         beforeStartConnect:(node:Vertex, edgeType:string) => {
@@ -216,11 +265,6 @@ ready(() => {
             [EVENT_CANVAS_CLICK]: (e:Event) => {
                 toolkit.clearSelection()
                 edgeEditor.stopEditing()
-            },
-            [EVENT_EDGE_ADDED]:(params:{edge:Edge, addedByMouse?:boolean}) => {
-                if (params.addedByMouse) {
-                    _editLabel(params.edge, true)
-                }
             }
         },
         consumeRightClick: false,

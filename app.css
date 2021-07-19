@@ -127,6 +127,10 @@
     fill:black;
 }
 
+.jtk-overlay {
+    z-index:11;
+}
+
 /*
     style for the delete button. this is in fact supplied in the editable connectors css as a default but on our own site
     the cascade conspires to elide the background color and foreground color. Without wanting to mark the style as `!important` in our defaults stylesheet,
