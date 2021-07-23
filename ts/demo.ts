@@ -29,7 +29,6 @@ import { AnchorLocations, DEFAULT } from "@jsplumb/common"
 import { Connection, BlankEndpoint, ArrowOverlay, LabelOverlay } from "@jsplumb/core"
 
 import { EdgePathEditor } from "@jsplumbtoolkit/connector-editors"
-import { ToolkitSyntaxHighlighter } from "@jsplumb/json-syntax-highlighter"
 import { createSurfaceManager } from "@jsplumbtoolkit/drop"
 import { registerHandler } from "@jsplumbtoolkit/print"
 import {DrawingToolsPlugin} from "@jsplumbtoolkit/browser-ui-plugin-drawing-tools"
@@ -39,7 +38,7 @@ import {OrthogonalConnector} from "@jsplumbtoolkit/connector-orthogonal"
 import * as ConnectorEditorOrthogonal from "@jsplumbtoolkit/connector-editors-orthogonal"
 import {LassoPlugin} from "@jsplumbtoolkit/browser-ui-plugin-lasso"
 import {CancelFunction} from "@jsplumbtoolkit/dialogs"
-import {consume} from "@jsplumb/browser-ui"
+
 ConnectorEditorOrthogonal.initialize()
 
 const START = "start"
@@ -293,8 +292,6 @@ ready(() => {
     } as SurfaceRenderOptions)
 
     const edgeEditor = new EdgePathEditor(renderer)
-
-    new ToolkitSyntaxHighlighter(toolkit, ".jtk-demo-dataset")
 
     toolkit.bind(EVENT_UNDOREDO_UPDATE, (state:UndoRedoUpdateParams) => {
         controls.setAttribute("can-undo", state.undoCount > 0 ? "true" : "false")
