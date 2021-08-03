@@ -1,3 +1,5 @@
+import * as Dialogs from "@jsplumbtoolkit/dialogs"
+
 import {
     SurfaceRenderOptions,
     Surface,
@@ -10,12 +12,7 @@ import {
     ArrowOverlay,
     LabelOverlay,
     AnchorLocations,
-    DEFAULT
-} from "@jsplumbtoolkit/browser-ui"
-
-import * as Dialogs from "@jsplumbtoolkit/dialogs"
-
-import {
+    DEFAULT,
     ready,
     newInstance
 } from "@jsplumbtoolkit/browser-ui-vanilla"
