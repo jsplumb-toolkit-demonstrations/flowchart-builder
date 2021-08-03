@@ -3,7 +3,14 @@ import {
     Surface,
     EVENT_TAP,
     EVENT_CANVAS_CLICK,
-    EVENT_SURFACE_MODE_CHANGED, SurfaceMode
+    EVENT_SURFACE_MODE_CHANGED,
+    SurfaceMode,
+    Connection,
+    BlankEndpoint,
+    ArrowOverlay,
+    LabelOverlay,
+    AnchorLocations,
+    DEFAULT
 } from "@jsplumbtoolkit/browser-ui"
 
 import * as Dialogs from "@jsplumbtoolkit/dialogs"
@@ -24,9 +31,6 @@ import {
     UndoRedoUpdateParams,
     ObjectData
 } from "@jsplumbtoolkit/core"
-
-import { AnchorLocations, DEFAULT } from "@jsplumb/common"
-import { Connection, BlankEndpoint, ArrowOverlay, LabelOverlay } from "@jsplumb/core"
 
 import { EdgePathEditor } from "@jsplumbtoolkit/connector-editors"
 import { createSurfaceManager } from "@jsplumbtoolkit/drop"
