@@ -17,9 +17,9 @@
   },
   "homepage": "https://github.com/jsplumb-toolkit-demonstrations/flowchart-builder#readme",
   "dependencies": {
-    "@jsplumbtoolkit/browser-ui-vanilla": "^5.0.0-RC14",
-    "@jsplumbtoolkit/drop": "^5.0.0-RC14",
-    "@jsplumbtoolkit/labels": "^5.0.0-RC14",
+    "@jsplumbtoolkit/browser-ui-vanilla": "^5.0.0-RC15",
+    "@jsplumbtoolkit/drop": "^5.0.0-RC15",
+    "@jsplumbtoolkit/labels": "^5.0.0-RC15",
     "@jsplumbtoolkit/print": "^5.0.0-RC14",
     "@jsplumbtoolkit/dialogs": "^5.0.0-RC14",
     "@jsplumbtoolkit/connector-editors-orthogonal": "^5.0.0-RC14",
