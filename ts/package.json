@@ -29,6 +29,7 @@
     "@jsplumbtoolkit/browser-ui-plugin-lasso": "^5.0.0-RC17"
   },
   "devDependencies": {
+    "@types/node": "14.17.3",
     "@babel/cli": "^7.4.4",
     "@babel/core": "^7.4.4",
     "@babel/plugin-proposal-class-properties": "^7.4.4",
