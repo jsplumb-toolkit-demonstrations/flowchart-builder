@@ -58,23 +58,23 @@ ready(() => {
 // ------------------------- dialogs -------------------------------------
 
     const dialogs = Dialogs.newInstance({
-        dialogs: {
-            "dlgText":[
-                '<input type="text" size="50" jtk-focus jtk-att="text" value="${text}" jtk-commit="true"/>',
-                'Enter Text',
-                true
 
-            ],
-            "dlgConfirm":[
-                '${msg}',
-                'Please Confirm',
-                true
-            ],
-            "dlgMessage":[
-                '${msg}',
-                "Message",
-                false
-            ]
+        dialogs: {
+            "dlgText": {
+                template: '<input type="text" size="50" jtk-focus jtk-att="text" value="${text}" jtk-commit="true"/>',
+                title: 'Enter Text',
+                cancelable: true
+            },
+            "dlgConfirm":{
+                template:'${msg}',
+                title:'Please Confirm',
+                cancelable:true
+            },
+            "dlgMessage": {
+                template:'${msg}',
+                title:"Message",
+                cancelable:false
+            }
         }
     });
 
