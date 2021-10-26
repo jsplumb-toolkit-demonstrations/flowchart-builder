@@ -397,17 +397,15 @@ ready(() => {
     //  selector: css3 selector identifying elements inside `source` that ae draggable
     //  dataGenerator: this function takes a DOM element and returns some default data for a node of the type represented by the element.
 
-    const defaultSizes = {
-        [QUESTION]:{w:240, h:220},
-        [ACTION]:{w:240, h:160},
-        [OUTPUT]:{w:240, h:160}
-    }
     createSurfaceManager({
         source:nodePalette,
         selector:"div",
         dataGenerator: function (el) {
-            const type = el.getAttribute("data-node-type")
-            return extend({ type }, defaultSizes[type])
+            return {
+                w: parseInt(el.getAttribute('data-width'), 10),
+                h: parseInt(el.getAttribute('data-height'), 10),
+                type: el.getAttribute("data-node-type")
+            }
         },
         surface:renderer
     })
