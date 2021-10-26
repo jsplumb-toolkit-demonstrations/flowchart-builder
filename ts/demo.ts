@@ -138,7 +138,9 @@ ready(() => {
             // edge undo/redo), this label is ignored.
             return (node.data.type === START && node.getEdges().length > 0) ? false : { label:"..." }
         }
-    })
+    });
+
+    (window as any).toolkit = toolkit
 
 // ------------------------ / toolkit setup ------------------------------------
 
@@ -257,8 +259,8 @@ ready(() => {
         },
         grid:{
             size:{
-                w:50,
-                h:50
+                w:20,
+                h:20
             }
         },
         events: {
