@@ -26,7 +26,8 @@ import {
     forEach,
     EVENT_UNDOREDO_UPDATE,
     UndoRedoUpdateParams,
-    ObjectData
+    ObjectData,
+    extend
 } from "@jsplumbtoolkit/core"
 
 import { EdgePathEditor } from "@jsplumbtoolkit/connector-editors"
@@ -396,17 +397,19 @@ ready(() => {
     //  selector: css3 selector identifying elements inside `source` that ae draggable
     //  dataGenerator: this function takes a DOM element and returns some default data for a node of the type represented by the element.
 
+    const defaultSizes = {
+        [QUESTION]:{w:240, h:220},
+        [ACTION]:{w:240, h:160},
+        [OUTPUT]:{w:240, h:160}
+    }
     createSurfaceManager({
         source:nodePalette,
         selector:"div",
-        surface:renderer,
         dataGenerator: function (el) {
-            return {
-                w:140,
-                h:140,
-                type:el.getAttribute("data-node-type")
-            };
-        }
+            const type = el.getAttribute("data-node-type")
+            return extend({ type }, defaultSizes[type])
+        },
+        surface:renderer
     })
 
 // ------------------------ / drag and drop new nodes -----------------
