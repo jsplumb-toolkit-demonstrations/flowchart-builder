@@ -1,0 +1,46 @@
+{
+  "name": "flowchart-builder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "demo.js",
+  "scripts": {
+    "build": "set -e;npx tsc;npx rollup -c rollup.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jsplumb-toolkit-demonstrations/flowchart-builder.git"
+  },
+  "author": "jsPlumb <hello@jsplumbtoolkit.com> (https://jsplumbtoolkit.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jsplumb-toolkit-demonstrations/flowchart-builder/issues"
+  },
+  "homepage": "https://github.com/jsplumb-toolkit-demonstrations/flowchart-builder#readme",
+  "dependencies": {
+    "@jsplumbtoolkit/browser-ui-vanilla": "^5.0.0",
+    "@jsplumbtoolkit/drop": "^5.0.0",
+    "@jsplumbtoolkit/labels": "^5.0.0",
+    "@jsplumbtoolkit/print": "^5.0.0",
+    "@jsplumbtoolkit/dialogs": "^5.0.0",
+    "@jsplumbtoolkit/connector-editors-orthogonal": "^5.0.0",
+    "@jsplumbtoolkit/connector-orthogonal": "^5.0.0",
+    "@jsplumbtoolkit/browser-ui-plugin-drawing-tools": "^5.0.0",
+    "@jsplumbtoolkit/browser-ui-plugin-miniview": "^5.0.0",
+    "@jsplumbtoolkit/browser-ui-plugin-lasso": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "14.17.3",
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
+    "@babel/preset-typescript": "^7.3.3",
+    "@rollup/plugin-babel": "^5.2.1",
+    "@rollup/plugin-commonjs": "^15.0.0",
+    "@rollup/plugin-node-resolve": "^9.0.0",
+    "babel-loader": "^8.0.6",
+    "rollup": "^2.26.11",
+    "typescript": "~3.4.0"
+  }
+}
