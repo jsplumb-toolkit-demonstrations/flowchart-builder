@@ -6,32 +6,62 @@ This is a simple flowchart builder application, with support for questions, acti
 
 ![Flowchart Builder Demonstration](demo-flowchart.png)
 
-This page gives you an in-depth look at how the application is put together. As of version 2.0.0, this demonstration uses the
-`EditableFlowchart` connector, which allows you to manipulate the paths that the edges follow.
+This repository contains examples in Typescript, ES6 and ES5. On this page we'll use the Typescript version as a reference.
 
 ---
 
 <a name="setup"></a>
 
-### Page Setup
+### Setup
 
 #### CSS
 
-- **jsplumbtoolkit.css**     Contains sane defaults for various core Toolkit widgets. Recommended for inclusion, as least until you can override everything you need to. 
-- **jsplumbtoolkit-demo-support.css**      Common styles for the Toolkit demo pages. Not needed for your apps.
-- **jsplumbtoolkit-syntax-highlighter.css**  Styles for the syntax highlighter widget used in the demonstration.
-- **jsplumbtoolkit-editable-connectors.css**  Sane defaults for the UI artifacts associated with editable connectors. As with `jsplumbtoolkit.css`, we recommend you include this until you've got values set in your own css for everything you need.
-- **app.css**  Styles for this demonstration.
+All 3 versions of the demonstration use these CSS imports:
 
-#### JS
 
-- **jsplumbtoolkit.js**          Core jsPlumb Toolkit code.
-- **jsplumbtoolkit-drop.js**     Drag/drop library, used in this demo to handle dragging new nodes onto the canvas.
-- **jsplumbtoolkit-syntax-highlighter.js**  Used in this demo by the code that displays the current dataset.
-- **jsplumbtoolkit-editable-connectors.js** The editable flowchart connectors code.
-- **app.js** Application specific JS.
+```html
+<!-- 
+    Contains sane defaults for various core Toolkit widgets. Recommended for inclusion, as least until you can override     everything you need to. 
+-->
+<link rel="stylesheet" href="node_modules/@jsplumbtoolkit/browser-ui/css/jsplumbtoolkit.css">
+<!--
+    Styles for the dialogs.
+-->
+<link rel="stylesheet" href="node_modules/@jsplumbtoolkit/dialogs/css/jsplumbtoolkit-dialogs.css">
+<!--
+    Sane defaults for the UI artifacts associated with editable connectors. As with `jsplumbtoolkit.css`, we recommend you include this until you've got values set in your own css for everything you need.
+-->
+<link rel="stylesheet" href="node_modules/@jsplumbtoolkit/connector-editors/css/jsplumbtoolkit-connector-editors.css">
+<!--
+    Common styles for the Toolkit demo pages. Not needed for your apps.
+-->
+<link rel="stylesheet" href="node_modules/@jsplumbtoolkit/browser-ui/css/jsplumbtoolkit-demo-support.css">
+<!--
+    app-specific css. shared by all 3 demonstrations.
+-->
+<link rel="stylesheet" href="../app.css">
+```
 
-With the exception of `app.css` and `app.js` each of these is loaded from a package with the same name.
+
+#### Imports
+
+
+These are the jsPlumb specific imports, which are the same across all 3 versions of the demonstration. The contents of `devDependencies` is different between the different versions, as those scripts are what are used to package the demonstration (we use Rollup but you can use any packager of course).
+
+```json
+"dependencies": {
+    "@jsplumbtoolkit/browser-ui-vanilla": "^5.0.0",
+    "@jsplumbtoolkit/drop": "^5.0.0",
+    "@jsplumbtoolkit/labels": "^5.0.0",
+    "@jsplumbtoolkit/print": "^5.0.0",
+    "@jsplumbtoolkit/dialogs": "^5.0.0",
+    "@jsplumbtoolkit/connector-editors-orthogonal": "^5.0.0",
+    "@jsplumbtoolkit/connector-orthogonal": "^5.0.0",
+    "@jsplumbtoolkit/browser-ui-plugin-drawing-tools": "^5.0.0",
+    "@jsplumbtoolkit/browser-ui-plugin-miniview": "^5.0.0",
+    "@jsplumbtoolkit/browser-ui-plugin-lasso": "^5.0.0"
+  }
+``` 
 
 ---
 
@@ -40,14 +70,7 @@ With the exception of `app.css` and `app.js` each of these is loaded from a pack
 ### Templates
 
 There are four templates used by the app - one each for the node types of `Question`, `Action` and `Output`, and one 
-for the `Start` node. These are contained in the `templates.html` file, which is imported into the page via this
-script tag:
-
-```xml
-<script type="text/x-jtk-templates" src="templates.html"></script>
-```
-
-The templates look like this:
+for the `Start` node. The templates look like this:
 
 **Start**
 
@@ -60,8 +83,7 @@ The templates look like this:
                 <svg:text text-anchor="middle" x="${ w / 2 }" y="${ h / 2 }" dominant-baseline="central">${text}</svg:text>
             </svg:svg>
         </div>
-        <div class="drag-start connect"></div>
-        <jtk-source port-type="start" filter=".connect"/>
+        <div class="drag-start connect" data-jtk-source="true" data-jtk-port-type="source"></div>
     </div>
 </script>
 ```
@@ -73,14 +95,13 @@ necessarily apply if you were using some other template engine.
 In this template we can see the `w`, `h`, `left` and `top` values from the node's data being used not just to position 
 the element but also to provide appropriate values for the ellipse and text label.
 
-The `jtk-source` element declares that this node is an edge source, of type `start` (the `port-type` attribute specifies 
-this).  The `filter` attribute instructs the Toolkit to enable drag only from some element having class "connect".
+The `.drag-start` element declares, via the `data-jtk-source` attribute, that this node is an edge source, of type `start` (the `data-jtk-port-type` attribute specifies this).
 
 **Action**
 
 ```xml
 <script type="jtk" id="tmplAction">
-    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-action">
+    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-action" data-jtk-target="true" data-jtk-target-port-type="target">
         <div style="position:relative">
             <svg:svg width="${w}" height="${h}">
                 <svg:rect x="10" y="10" width="${w-20}" height="${h-20}"/>
@@ -89,21 +110,19 @@ this).  The `filter` attribute instructs the Toolkit to enable drag only from so
         </div>
         <div class="node-edit node-action"/>
         <div class="node-delete node-action delete"/>
-        <div class="drag-start connect"></div>
-        <jtk-target port-type="target"/>
-        <jtk-source port-type="source" filter=".connect"/>
+        <div class="drag-start connect" data-jtk-source="true" data-jtk-port-type="source"></div>
     </div>
 </script>
 ```
 
 Once again we use the position and dimensions for the node's main container as well as its SVG elements. **Action** nodes 
-are configured as both edge sources and targets.
+are configured as targets, via the `data-jtk-target` attribute, with a target port type of `"target"`, which is specified by the value of the `data-jtk-target-port-type` attribute. As with **Start** nodes, there is a `.drag-start` element that acts as a source for connections dragged from the node.
 
 **Question**
 
 ```xml
 <script type="jtk" id="tmplQuestion">
-    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-question">
+    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-question" data-jtk-target="true" data-jtk-target-port-type="target">
         <div style="position:relative">
             <svg:svg width="${w}" height="${h}">
                 <svg:path d="M ${w/2} 10 L ${w-10} ${h/2} L ${w/2} ${h-10} L 10 ${h/2} Z"/>
@@ -112,20 +131,18 @@ are configured as both edge sources and targets.
         </div>
         <div class="node-edit node-action"/>
         <div class="node-delete node-action delete"/>
-        <div class="drag-start connect"></div>
-        <jtk-source port-type="source" filter=".connect"/>
-        <jtk-target port-type="target"/>
+        <div class="drag-start connect" data-jtk-source="true" data-jtk-port-type="source"></div>
     </div>
 </script>
 ```
 
-The **Question** node differs only from **Action** in that it draws a diamond rather than a rectangle.
+The **Question** node differs only from **Action** in that it draws a diamond rather than a rectangle. Connectivity - target/source - is the same as for **Action** nodes.
 
 **Output**
 
 ```xml
  <script type="jtk" id="tmplOutput">
-     <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-output">
+     <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-output" data-jtk-target="true" data-jtk-target-port-type="target">
          <div style="position:relative">
              <svg:svg width="${w}" height="${h}">
                  <svg:rect x="10" y="10" width="${w-20}" height="${h-20}"/>
@@ -134,16 +151,86 @@ The **Question** node differs only from **Action** in that it draws a diamond ra
          </div>
          <div class="node-edit node-action"/>
          <div class="node-delete node-action delete"/>
-         <jtk-target port-type="target"/>
      </div>
  </script>
 ```
 
-The `Output` node is configured to be a connection target only.
+The **Output** node is configured to be a connection target only, again via the `data-jtk-target` and `data-jtk-target-port-type` attributes. 
 
 [TOP](#top)
 
 ---
+
+<a name="init"></a>
+
+### Initializing the Toolkit
+
+We use `newInstance` to create a new Toolkit, passing in a `nodeFactory` - a method called when the user drops a new node onto the canvas - and an `edgeFactory` - a method called when the user drags a new edge between two nodes.
+
+```javascript
+
+import { newInstance } from "@jsplumbtoolkit/browser-ui-vanilla"}
+
+const toolkit = newInstance({
+    nodeFactory: (type:string, data:any, callback:Function) => {
+        dialogs.show({
+            id: "dlgText",
+            title: "Enter " + type + " name:",
+            onOK:  (d:any) => {
+                data.text = d.text;
+                // if the user entered a name...
+                if (data.text) {
+                    // and it was at least 2 chars
+                    if (data.text.length >= 2) {
+                        // set an id and continue.
+                        data.id = uuid()
+                        callback(data);
+                    }
+                    else
+                    // else advise the user.
+                        alert(type + " names must be at least 2 characters!");
+                }
+                // else...do not proceed.
+            }
+        })
+
+        return true
+    },
+    edgeFactory:(type:string, data:any, continueCallback:Function, abortCallback:CancelFunction) => {
+        showEdgeEditDialog(data, continueCallback, abortCallback)
+        return true
+    },
+    beforeStartConnect:(node:Vertex, edgeType:string) => {
+        // limit edges from start node to 1. if any other type of node, return a payload for the edge.
+        // if there is already a label set for the edge (say, if it was connected programmatically or via
+        // edge undo/redo), this label is ignored.
+        return (node.data.type === START && node.getEdges().length > 0) ? false : { label:"..." }
+    }
+});
+```
+
+`showEdgeEditDialog` is a helper method used both by the `edgeFactory` above and also when the user clicks an edge to edit it (see below).
+
+```javascript
+function showEdgeEditDialog(data:ObjectData, continueFunction:Function, abortFunction?:CancelFunction) {
+    dialogs.show({
+        id: "dlgText",
+        data: {
+            text: data.label || ""
+        },
+        onOK: (data:any) => {
+            //toolkit.updateEdge(edge, )
+            continueFunction({ label:data.text || "" })
+        },
+        onCancel:abortFunction
+    })
+}
+```
+
+[TOP](#top)
+
+---
+
 
 <a name="loading"></a>
 
@@ -153,8 +240,11 @@ Data for this application is stored in `data/copyright.json` inside the applicat
 
 ```javascript
 toolkit.load({
-  url: "data/copyright.json"
-});
+    url: "./copyright.json",
+    onload:function() {
+        renderer.zoomToFit()
+    }
+})
 ```
 
 [TOP](#top)
@@ -168,18 +258,23 @@ toolkit.load({
 This is how we configure a Surface Drop Manager in this demonstration:
 
 ```javascript
-new SurfaceDropManager({
+
+import { createSurfaceManager } from "@jsplumbtoolkit/drop"
+
+const nodePalette = mainElement.querySelector(".node-palette")
+
+createSurfaceManager({
     source:nodePalette,
     selector:"div",
-    surface:renderer,
     dataGenerator: function (el) {
         return {
-            w:140,
-            h:140,
-            type:el.getAttribute("data-node-type")
-        };
-     }
-});
+            w: parseInt(el.getAttribute('data-width'), 10),
+            h: parseInt(el.getAttribute('data-height'), 10),
+            type: el.getAttribute("data-node-type")
+        }
+    },
+    surface:renderer
+})
 ```
 
 - **source** The element containing the draggables. Required.
@@ -188,7 +283,7 @@ new SurfaceDropManager({
 - **dataGenerator** This function is used by the Toolkit to generate an initial dataset for a Node you have begun to drag. Required.
 whenever a new node is dropped on whitespace.
 
-`SurfaceDropManager` is an extension of the [Drop Manager](drop-manager) which provides default implementations for the various drop functions. By default, the Surface Drop Manager is configured to allow nodes/groups to be dropped onto the canvas or an existing edge, and for nodes to be dropped on groups. Detailed documentation can be found [on this page](surface-drop-manager).
+`SurfaceDropManager` is an extension of the Drop Manager which provides default implementations for the various drop functions. By default, the Surface Drop Manager is configured to allow nodes/groups to be dropped onto the canvas or an existing edge, and for nodes to be dropped on groups.
 
 Note that `SurfaceDropManager` uses a delegated drag handler, so the contents of the element acting as the container for draggables can be arbitrarily updated by your code without needing to inform the drop manager of the changes - it will track them automatically.
 
@@ -216,27 +311,23 @@ We'll go through each of these and provide a brief code snippet highlighting the
 #### Edit Node Text
 
 ```javascript
-jsPlumb.on(document, "tap", ".node-edit", function () {
-  var info = renderer.getObjectInfo(this);
-  jsPlumbToolkit.Dialogs.show({
-    id: "dlgText",
-    data: info.obj.data,
-    title: "Edit " + info.obj.data.type + " name",
-    onOK: function (data) {
-      if (data.text && data.text.length > 2) {
-        // if name is at least 2 chars long, update the underlying data and update the UI.
-        toolkit.updateNode(info.obj, data);
-      }
-    }
-  });
-});
+renderer.bindModelEvent(EVENT_TAP, ".node-edit", (event:Event, eventTarget:HTMLElement, info:SurfaceObjectInfo<Vertex>) => {
+    dialogs.show({
+        id: "dlgText",
+        data: info.obj.data,
+        title: "Edit " + info.obj.data.type + " name",
+        onOK: (data:any) => {
+            if (data.text && data.text.length > 2) {
+                // if name is at least 2 chars long, update the underlying data and
+                // update the UI.
+                toolkit.updateNode(info.obj, data)
+            }
+        }
+    })
+})
 ```
 
-Note here the `getObjectInfo` method: this is method with which you will want to acquaint yourself. It is defined on a 
-Surface, not on a Toolkit instance, and takes a DOM element as argument and places it within the context of some object 
-managed by the Toolkit instance that the Surface is associated with. In this case, the click event occurs on an icon. 
-`getObjectInfo` traverses up the icon's ancestors until it finds an element that is associated with a Toolkit object. When 
-a Toolkit object is found, getObjectInfo returns an object with these values:
+Note here the `bindModelEvent` method: this is method with which you will want to acquaint yourself. It is defined on a Surface, not on a Toolkit instance, and takes a CSS3 selector as argument. When an event with the bound name (in this case "tap") occurs on a child element of some node/group whose selector matches the one given, `bindModelEvent` hits your supplied callback, passing the original event, the specific DOM element the event occurred on, and an `info` object 
 
 - **id** ID of the Toolkit object
 - **obj** The associated Toolkit object. May be a Node or a Port.
@@ -246,68 +337,78 @@ a Toolkit object is found, getObjectInfo returns an object with these values:
 In this event handler, we show the user a dialog that will allow them to edit the Node's text. If the edited text is at 
 least two character long we update the model.
 
-This application uses the Toolkit's [dialogs](dialogs) import to manage simple interactions with data members such as 
+This application uses the `@jsplumbtoolkit/dialogs` to manage simple interactions with data members such as 
 this. Your application may choose to use a different mechanism.
 
 <a name="delete-node"></a>
 #### Delete Node
 
 ```javascript
-jsPlumb.on(document, "tap", ".node-delete", function () {
-  var info = renderer.getObjectInfo(this);
-  jsPlumbToolkit.Dialogs.show({
-    id: "dlgConfirm",
-    data: {
-      msg: "Delete '" + info.obj.data.text + "'"
-    },
-    onOK: function () {
-      toolkit.removeNode(info.obj);
-    }
-  });
-});
+renderer.bindModelEvent(EVENT_TAP, ".node-delete",  (event:Event, eventTarget:HTMLElement, info:ObjectInfo<Vertex>) => {
+    dialogs.show({
+        id: "dlgConfirm",
+        data: {
+            msg: "Delete '" + info.obj.data.text + "'"
+        },
+        onOK: function () {
+            toolkit.removeNode(info.obj)
+        }
+    })
+})
 ```
 
-We use `getObjectInfo` again to find the related Toolkit Node, and then we prompt the user to see if they wish to delete 
-it. If the users answers yes, then we call `removeNode` on the Toolkit, passing in the ID of the object to delete. This 
-will cause all Edges associated with the Node to be deleted, and for the UI to be updated accordingly.
+We use `bindModelEvent` again to bind to an event on a `.node-delete` child element of a node, and then we prompt the user to see if they wish to delete it. If the users answers yes, then we call `removeNode` on the Toolkit, passing in the ID of the object to delete. This will cause all Edges associated with the Node to be deleted, and for the UI to be updated accordingly.
 
 <a name="edit-edge-path"></a>
 #### Edit Edge Path
 
-We register a `click` listener on edges by providing it as an event handler to the View, on the edge type that acts 
-as the parent type for all others:
+To edit the paths of the edges, we make use of an "orthogonal connector editor", which is supplied in the `@jsplumbtoolkit/connector-editors-orthogonal` package. To set this up we have to import it and initialise it manually:
+
+```javascript
+import * as ConnectorEditorOrthogonal from "@jsplumbtoolkit/connector-editors-orthogonal"
+ConnectorEditorOrthogonal.initialize()
+```
+
+This is required because the orthogonal connector editor is registered by name on the edge edit manager, and without a specific call to it, the build mechanism would not pull the editor code in.
+
+Having registered the orthogonal editor, an edge editor is created further down in the code (it is given the Surface to attach to as argument):
+
+```javascript
+const edgeEditor = new EdgePathEditor(renderer)
+```
+
+Now to edit an edge, we register a `click` listener on edges by providing it as an event handler to the View, on the edge type that acts as the parent type for all others:
 
 
 ```javascript
 ...
 edges: {
-  "default": {
-      editable:true,
-      anchor:"AutoDefault",
-      endpoint:"Blank",
-      connector: ["EditableFlowchart", { cornerRadius: 3 } ],
-      paintStyle: { strokeWidth: 2, stroke: "rgb(132, 172, 179)", outlineWidth: 3, outlineStroke: "transparent" },	//	paint style for this edge type.
-      hoverPaintStyle: { strokeWidth: 2, stroke: "rgb(67,67,67)" }, // hover paint style for this edge type.
-      events: {
-          click:function(p) {
-              renderer.startEditing(p.edge, {
-                  deleteButton:true,
-                  onMaybeDelete:function(edge, connection, doDelete) {
-                      jsPlumbToolkit.Dialogs.show({
-                          id: "dlgConfirm",
-                          data: {
-                              msg: "Delete Edge"
-                          },
-                          onOK: doDelete
-                      });
-                  }
-              });
-          }
-      },
-      overlays: [
-          [ "Arrow", { location: 1, width: 10, length: 10 }]
-      ]
-  }
+    [DEFAULT]: {
+        anchor:AnchorLocations.AutoDefault,
+        endpoint:BlankEndpoint.type,
+        connector: {type:OrthogonalConnector.type, options:{ cornerRadius: 3 } },
+        paintStyle: { strokeWidth: 2, stroke: "rgb(132, 172, 179)", outlineWidth: 3, outlineStroke: "transparent" },	//	paint style for this edge type.
+        hoverPaintStyle: { strokeWidth: 2, stroke: "rgb(67,67,67)" }, // hover paint style for this edge type.
+        events: {
+            click:(p:any) => {
+                edgeEditor.startEditing(p.edge, {
+                    deleteButton:true,
+                    onMaybeDelete:(edge:Edge, connection:Connection, doDelete:(data:Record<string, any>)=>any) => {
+                        dialogs.show({
+                            id: "dlgConfirm",
+                            data: {
+                                msg: "Delete Edge"
+                            },
+                            onOK: doDelete
+                        });
+                    }
+                })
+            }
+        },
+        overlays: [
+            { type:ArrowOverlay.type, options:{ location: 1, width: 10, length: 10 }}
+        ]
+    }
 
 ...
 ```
@@ -323,9 +424,9 @@ argument to the `render` call:
 
 ```javascript
 events: {
-  canvasClick: function (e) {
+  [EVENT_CANVAS_CLICK]:  (e:Event) => {
       toolkit.clearSelection();
-      renderer.stopEditing();
+      edgeEditor.stopEditing();
   }
 }
 ```
@@ -335,33 +436,59 @@ Note also that the `canvasClick` handler clears the current selection - this is 
 <a name="remove-edge"></a>
 #### Removing edges
 
-The `click` listener added to the edge uses the `startEditing(..)` method to put the edge into path edit mode.  This method
-supports the addition of arbitrary overlays to the edge when in path edit mode, as well as a shortcut "deleteButton" helper to
-add an overlay which will, when clicked, cause the edge to be removed.  For more information about this functionality, take a
-look at the [editing connector paths](editing-connector-paths) documentation.
+The `click` listener added to the edge uses the `startEditing(..)` method to put the edge into path edit mode.  This method supports the addition of arbitrary overlays to the edge when in path edit mode, as well as a shortcut "deleteButton" helper to add an overlay which will, when clicked, cause the edge to be removed.  
 
 <a name="edit-edge-label"></a>
 #### Editing edge labels
 
-All Edges except those from a *Start* node are set to be of type `connection`, which is defined in the view as follows:
+All Edges except those from a *Start* node are set to be of type `"response"`, which is defined in the view as follows:
 
 ```javascript
-"connection":{
-  parent:"default",
-  overlays:[
-    [ "Label", {
-      label: "${label}",
-      events:{
-        click:function(params) {
-          _editLabel(params.edge);
+
+const RESPONSE = "response"
+
+[RESPONSE]:{
+    parent:DEFAULT,
+    overlays:[
+        {
+            type: LabelOverlay.type,
+            options: {
+                label: "${label}",
+                events: {
+                    click: (params:any) => {
+                        _editLabel(params.edge);
+                    }
+                }
+            }
         }
-      }
-    }]
-  ]
+    ]
 }
 ```
 
 We define a `click` event handler on the Label overlay which edits the label for the Edge.
+
+The `_editLabel` method that is called looks like this:
+
+```javascript
+const _editLabel = (edge:Edge, deleteOnCancel?:boolean) => {
+    dialogs.show({
+        id: "dlgText",
+        data: {
+            text: edge.data.label || ""
+        },
+        onOK: (data:any) => {
+            toolkit.updateEdge(edge, { label:data.text || "" })
+        },
+        onCancel:() => {
+            if (deleteOnCancel) {
+                toolkit.removeEdge(edge)
+            }
+        }
+    })
+}
+```
+
+the method could have been declared directly inside the view but was pulled out for clarity.
 
 [TOP](#top)
 
@@ -370,27 +497,23 @@ We define a `click` event handler on the Label overlay which edits the label for
 <a name="undo-redo"></a>
 ### Undo/Redo
 
-In this demonstration it is possible to undo/redo the addition or removal of nodes and edges, as well as the editing of edge paths. This is achieved through the use of a `jsPlumbToolkitUndoRedo` manager.
+In this demonstration it is possible to undo/redo the addition or removal of nodes and edges, as well as the editing of edge paths. In version 5.x of the Toolkit, undo/redo is baked into the core.
 
-We set it up after creating our instance of the Toolkit:
+After creating our instance of the Toolkit we bind a few event listeners to help us respond to the undo/redo buttons in the UI.
 
 ```javascript
-var undoredo = window.undoredo = new jsPlumbToolkitUndoRedo({
-    surface:renderer,
-    onChange:function(undo, undoSize, redoSize) {
-        controls.setAttribute("can-undo", undoSize > 0);
-        controls.setAttribute("can-redo", redoSize > 0);
-    },
-    compound:true
-});
+toolkit.bind(EVENT_UNDOREDO_UPDATE, (state:UndoRedoUpdateParams) => {
+    controls.setAttribute("can-undo", state.undoCount > 0 ? "true" : "false")
+    controls.setAttribute("can-redo", state.redoCount > 0 ? "true" : "false")
+})
 
-jsPlumb.on(controls, "tap", "[undo]", function () {
-    undoredo.undo();
-});
+renderer.on(controls, EVENT_TAP, "[undo]",  () => {
+    toolkit.undo()
+})
 
-jsPlumb.on(controls, "tap", "[redo]", function () {
-    undoredo.redo();
-});
+renderer.on(controls, EVENT_TAP, "[redo]", () => {
+    toolkit.redo()
+})
 ```
 
 The `controls` element referred to here looks like this in the HTML:
@@ -405,47 +528,7 @@ The `controls` element referred to here looks like this in the HTML:
 </div>
 ```
 
-The last two items in this list are our `undo` and `redo` buttons - we declared an appropriate attribute with which to identify each button, and then we bind to tap events on those buttons, for instance:
- 
-```javascript
-jsPlumb.on(controls, "tap", "[undo]", function () {
-    undoredo.undo();
-});
-```
-
-The `undo` and `redo` commands have no effect on the undo/redo manager if there is nothing to undo or redo when they are called.
-
----
-
-<a name="undo-redo-events"></a>
-### Events
-
-We declared an `onChange` handler in the undo/redo manager constructor. Our handler simply sets a `can-undo` or `can-redo` attribute on the controls element, depending on the size of the undo and redo stacks when the callback is invoked. We use CSS (see below) to use these attributes to manage the UI.
-
-```javascript
-onChange:function(undo, undoSize, redoSize) {
-    controls.setAttribute("can-undo", undoSize > 0);
-    controls.setAttribute("can-redo", redoSize > 0);
-}
-```
-
-#### Compound events
-
-Notice the `compound:true` parameter on the undo/redo constructor?  It tells the undo manager that when a node/port/group is deleted that had edges connected to it, the deletion of the node/port/group and its connected edges should be treated as one, compound, event on the stack. That is, hitting undo after deleting a node with several edges should reinstate both the node and all of the edges. The default behaviour of the undo manager is to treat the node deletion and each of its connected edge deletions as separate events on the undo stack.
-
----
-
-<a name="css"></a>
-### CSS
-
-This is the CSS we use:
-
-```css
-[undo], [redo] { background-color:darkgray !important; }
-[can-undo='true'] [undo], [can-redo='true'] [redo] { background-color: #3E7E9C  !important; }
-```
-
-[TOP](#top)
+The last two items in this list are our `undo` and `redo` buttons - we declared an appropriate attribute with which to identify each button, and then we bind to tap events on those buttons.
 
 ---
 
@@ -456,20 +539,40 @@ To resize a node you must first either click on it, or use the lasso (described 
 
 ![Selected Node](flowchart-selected-node.png)
 
-The dotted line and drag handles that are added to a selected Node are put there by the Toolkit's drawing tools. It listens to the Toolkit's select/deselect events and decorates UI elements accordingly. These tools are discussed in detail on [this page](https://docs.jsplumbtoolkit.com/toolkit/current/articles/drawing.html).
+The dotted line and drag handles that are added to a selected Node are put there by the Toolkit's drawing tools. It listens to the Toolkit's select/deselect events and decorates UI elements accordingly. These tools are in the package `@jsplumbtoolkit/browser-ui-plugin-drawing-tools`, and as the name suggests, are a plugin for the Surface.
 
-The drawing tools are initialized with this line of code:
+The drawing tools are initialized by being included in the list of plugins for the `render` call:
 
 ```javascript
-// configure Drawing tools.
-new jsPlumbToolkit.DrawingTools({renderer: renderer});
+import {DrawingToolsPlugin} from "@jsplumbtoolkit/browser-ui-plugin-drawing-tools"
+
+toolkit.render(canvasElement, {
+    ...
+    plugins:[
+        {
+            type: MiniviewPlugin.type,
+            options: {
+                container: miniviewElement
+            }
+        },
+        DrawingToolsPlugin.type,
+        {
+            type:LassoPlugin.type,
+            options: {
+                lassoInvert:true,
+                lassoEdges:true
+            }
+        }
+    ],
+})
+
+
 ```
 
-You pass them the instance of the Surface widget you're working with.
 
 Resizing is handled automatically by the drawing tools.  By default, these tools will change the `w`, `h`, `left` and `top` values in a node's data, but this can be changed.
 
-When a node's data is updated the drawing tools call the appropriate update method on the underlying Toolkit. Note that to see the changes reflected immediately in the DOM you need to be using the Toolkit's default template mechanism, [Rotors](templating#rotors). If you're using your own template mechanism you will need to listen for events from the drawing tools and update the DOM yourself.
+When a node's data is updated the drawing tools call the appropriate update method on the underlying Toolkit. 
 
 [TOP](#top)
 
@@ -484,21 +587,34 @@ When a node's data is updated the drawing tools call the appropriate update meth
 Nodes can be selected with a left-click (or tap on a touch device; `tap` is a better event to choose in general because the Toolkit abstracts out the difference between mouse devices and touch devices and presents `click` events as `tap` events on non touch devices).  This is configured in the `view` parameter to the `render` call. In this application, nodes of type _selectable_ have the capability enabled with this code:
 
 ```javascript
-"selectable": {
-  events: {
-    tap: function (params) {
-      toolkit.toggleSelection(params.node);
+[SELECTABLE]: {
+    events: {
+        tap: (params:{obj:Vertex}) => {
+            toolkit.toggleSelection(params.obj);
+        }
     }
-  }
 }
 ```
 
-The `tap` event (discussed [here](widget-surface#eventlist)) is preferable to `click`, as it ensures the application responds only to true clicks on devices with a mouse, and also avoids the delay that some vendors introduce to a click event on touch devices.
+The `tap` event is preferable to `click`, as it ensures the application responds only to true clicks on devices with a mouse, and also avoids the delay that some vendors introduce to a click event on touch devices.
 
 <a name="selecting-lasso"></a>
 #### Selecting with lasso
 
-Lasso selection is enabled by default on the Surface widget. 
+Lasso selection is provided by a plugin on the Surface widget.
+
+```javascript
+plugins:[
+        ...
+        {
+            type:LassoPlugin.type,
+            options: {
+                lassoInvert:true,
+                lassoEdges:true
+            }
+        }
+    ]
+```
 
 To activate the lasso, click the pencil icon in the toolbar:
 
@@ -507,15 +623,17 @@ To activate the lasso, click the pencil icon in the toolbar:
 The code that listens to clicks on this icon is as follows:
 
 ```javascript
-// listener for mode change on renderer.
-renderer.bind("modeChanged", function (mode) {
-  jsPlumb.removeClass(jsPlumb.getSelector("[mode]"), "selected-mode");
-  jsPlumb.addClass(jsPlumb.getSelector("[mode='" + mode + "']"), "selected-mode");
-});
+renderer.bind(EVENT_SURFACE_MODE_CHANGED, (mode:string) => {
+    forEach(controls.querySelectorAll("[mode]"), (e:Element) => {
+        renderer.removeClass(e, "selected-mode")
+    })
+
+    renderer.addClass(controls.querySelector("[mode='" + mode + "']"), "selected-mode")
+})
 
 // pan mode/select mode
-jsPlumb.on(".controls", "click", "[mode]", function () {
-  renderer.setMode(this.getAttribute("mode"));
+renderer.on(controls, EVENT_TAP, "[mode]", (e:Event, eventTarget:HTMLElement) => {
+    renderer.setMode(eventTarget.getAttribute("mode") as SurfaceMode)
 });
 ```
 
@@ -537,10 +655,10 @@ The Surface widget automatically exits select mode once the user has selected so
 
 ```javascript
 events: {
-  canvasClick: function (e) {
-      toolkit.clearSelection();
-      renderer.stopEditing();
-  }
+    [EVENT_CANVAS_CLICK]: (e:Event) => {
+        toolkit.clearSelection()
+        edgeEditor.stopEditing()
+    }
 }
 ```
 
@@ -553,35 +671,40 @@ events: {
 <a name="dialogs"></a>
 ### Dialogs
 
-The dialogs used in this app are part of the jsPlumb Toolkit core. They provide a simple abstraction around the business of getting input from the user and dealing with it; they're not necessarily fully-featured enough for all applications.
-
-#### Initialization
-
-To initialize the dialogs, first call `jsPlumbToolkit.Dialogs.initialize`, with an appropriate selector for the templates for your dialogs (see below for an explanation of this):
+This demonstration uses the `@jsplumbtoolkit/dialogs` package, which are a lightweight dialog solution created for use by the Toolkit demonstrations but are made available to licensees. The dialogs are initialised like this:
 
 ```javascript
-jsPlumbToolkit.Dialogs.initialize({
-  selector:".dlg"
+
+import * as Dialogs from "@jsplumbtoolkit/dialogs"
+
+const dialogs = Dialogs.newInstance({
+    dialogs: {
+        "dlgText": {
+            template: '<input type="text" size="50" jtk-focus jtk-att="text" value="${text}" jtk-commit="true"/>',
+            title: 'Enter Text',
+            cancelable: true
+        },
+        "dlgConfirm":{
+            template:'${msg}',
+            title:'Please Confirm',
+            cancelable:true
+        },
+        "dlgMessage": {
+            template:'${msg}',
+            title:"Message",
+            cancelable:false
+        }
+    }
 });
-
-var showDialog = jsPlumbToolkit.Dialogs.show;
 ```
 
-Note here we've also aliased `jsPlumbToolkit.Dialogs.show`, to save some typing.
+Each dialog declaration consists of the template to use, its title, and whether or not the dialog should have a cancel button.
 
-#### Templates
-
-Each dialog has a template in the HTML, with some class name that you matched in the `selector` argument to the `initialize` call above:
-
-```xml
-<script type="jtk" class="dlg" id="dlgViewQuery" title="Edit Query">
-  <textarea class="txtViewQuery" jtk-focus jtk-att="query">${query}</textarea>
-</script>
-```
+#### Dialog Templates
 
 ##### Binding Parameters
 
-These templates use the same template engine as the Surface renderer, so in this example you can see we've extracted `query` from the View node's data, and injected it into the textarea. But what might not be immediately obvious is the purpose of the `jtk-att` attribute: it tells the dialog handler that the value of this textarea should be passed to the OK handler, using the key `query`.
+These templates use the same template engine as the Surface renderer. Not, in the `input` field above, the `jtk-att` attribute: it tells the dialog handler that the value of this textarea should be passed to the OK handler, using the key `text`, and also that it should be populated from the incoming data.
 
 Note also in the above example, the `jtk-focus` attribute: this tells the dialog handler that the textarea should be given the focus when the dialog first opens.
 
@@ -590,7 +713,7 @@ Note also in the above example, the `jtk-focus` attribute: this tells the dialog
 This example is the dialog that is shown when you edit a View query. We provide the id of the template to use for the dialog, and we provide the View node's data as the backing data for the dialog. Then we provide an `onOK` callback:
 
 ```javascript
-jsPlumbToolkit.Dialogs.show({
+dialogs.show({
   id:"dlgViewQuery",
   data:info.obj.data,
   onOK:function(data) {
@@ -651,7 +774,7 @@ identical to a `question` node, with the only differences being the SVG `path` e
 
 ```xml
 <script type="jtk" id="tmplUncertainty">
-    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-uncertainty">
+    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-question" data-jtk-target="true" data-jtk-target-port-type="target">
         <div style="position:relative">
             <div class="node-edit node-action">
                 <i class="fa fa-pencil-square-o"/>
@@ -664,8 +787,7 @@ identical to a `question` node, with the only differences being the SVG `path` e
                 <svg:text text-anchor="middle" x="${w/2}" y="${h/2}" dominant-baseline="central">${text}</svg:text>
             </svg:svg>
         </div>
-        <jtk-source port-type="source" filter=".outer"/>
-        <jtk-target port-type="target"/>
+        <div class="drag-start connect" data-jtk-source="true" data-jtk-port-type="source"></div>
     </div>
 </script>
 ```
@@ -673,33 +795,41 @@ identical to a `question` node, with the only differences being the SVG `path` e
 #### 2. Map the new type in your view
 
 ```javascript
-nodes: {
-    "start": {
-        template: "tmplStart"
-    },
-    "selectable": {
-        events: {
-            tap: function (params) {
-                toolkit.toggleSelection(params.node);
+const UNCERTAINTY = "uncertainty"
+
+const renderer:Surface = toolkit.render(canvasElement, {
+    view: {
+        nodes: {
+            [START]: {
+                templateId: "tmplStart"
+            },
+            [SELECTABLE]: {
+                events: {
+                    tap: (params:{obj:Vertex}) => {
+                        toolkit.toggleSelection(params.obj);
+                    }
+                }
+            },
+            [QUESTION]: {
+                parent: SELECTABLE,
+                templateId: "tmplQuestion"
+            },
+            [ACTION]: {
+                parent: SELECTABLE,
+                templateId: "tmplAction"
+            },
+            [OUTPUT]:{
+                parent:SELECTABLE,
+                templateId:"tmplOutput"
+            },
+            [UNCERTAINTY]:{
+                parent:SELECTABLE,
+                templateId:"tmplUncertainty"
             }
         }
-    },
-    "question": {
-        parent: "selectable",
-        template: "tmplQuestion"
-    },
-    "action": {
-        parent: "selectable",
-        template: "tmplAction"
-    },
-    "output":{
-        parent:"selectable",
-        template:"tmplOutput"
-    },
-    "uncertainty":{
-        parent:"selectable",
-        template:"tmplUncertainty"
+        ... 
     }
+    ...
 }
 ```
 
@@ -707,8 +837,7 @@ Note here we said that this new node type's template should extend `selectable`,
 
 ##### Changes to the data
 
-For reference, here's how you'd represent a node of this new type in your data (we've changed the existing `Is it Creative Commons?` 
-node here to be of our new type):
+For reference, here's how you'd represent a node of this new type in your data (we've changed the existing `Is it Creative Commons?` node here to be of our new type):
 
 ```javascript
 {
