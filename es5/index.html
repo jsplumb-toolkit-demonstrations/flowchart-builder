@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+    <head>
+        <title>jsPlumbToolkit - Flowchart Builder Example</title>
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1" />
+        <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+        <!-- CSS -->
+        <link rel="stylesheet" href="node_modules/@jsplumbtoolkit/browser-ui/css/jsplumbtoolkit.css">
+        <link rel="stylesheet" href="node_modules/@jsplumbtoolkit/dialogs/css/jsplumbtoolkit-dialogs.css">
+        <link rel="stylesheet" href="node_modules/@jsplumbtoolkit/connector-editors/css/jsplumbtoolkit-connector-editors.css">
+        <link rel="stylesheet" href="node_modules/@jsplumbtoolkit/browser-ui/css/jsplumbtoolkit-demo-support.css">
+        <!-- /CSS -->
+        <link rel="stylesheet" href="../app.css">
+
+    </head>
+    <body>
+
+    <script type="jtk" id="tmplStart">
+        <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-start">
+            <div style="position:relative">
+                <svg:svg width="${w}" height="${h}">
+                    <svg:ellipse cx="${w/2}" cy="${h/2}" rx="${(w/2) - 10}" ry="${(h/2) - 10}"/>
+                    <svg:text text-anchor="middle" x="${ w / 2 }" y="${ h / 2 }" dominant-baseline="central">${text}</svg:text>
+                </svg:svg>
+            </div>
+            <div class="drag-start connect" data-jtk-source="true" data-jtk-port-type="source"></div>
+        </div>
+    </script>
+
+        <script type="jtk" id="tmplAction">
+        <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-action" data-jtk-target="true" data-jtk-target-port-type="target">
+            <div style="position:relative">
+                <svg:svg width="${w}" height="${h}">
+                    <svg:rect x="10" y="10" width="${w-20}" height="${h-20}"/>
+                    <svg:text text-anchor="middle" x="${w/2}" y="${h/2}" dominant-baseline="central">${text}</svg:text>
+                </svg:svg>
+            </div>
+            <div class="node-edit node-action"/>
+            <div class="node-delete node-action delete"/>
+            <div class="drag-start connect" data-jtk-source="true" data-jtk-port-type="source"></div>
+        </div>
+    </script>
+
+        <script type="jtk" id="tmplQuestion">
+        <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-question" data-jtk-target="true" data-jtk-target-port-type="target">
+            <div style="position:relative">
+                <svg:svg width="${w}" height="${h}">
+                    <svg:path d="M ${w/2} 10 L ${w-10} ${h/2} L ${w/2} ${h-10} L 10 ${h/2} Z"/>
+                    <svg:text text-anchor="middle" x="${w/2}" y="${h/2}" dominant-baseline="central">${text}</svg:text>
+                </svg:svg>
+            </div>
+            <div class="node-edit node-action"/>
+            <div class="node-delete node-action delete"/>
+            <div class="drag-start connect" data-jtk-source="true" data-jtk-port-type="source"></div>
+        </div>
+    </script>
+
+        <script type="jtk" id="tmplOutput">
+        <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-output" data-jtk-target="true" data-jtk-target-port-type="target">
+            <div style="position:relative">
+                <svg:svg width="${w}" height="${h}">
+                    <svg:rect x="10" y="10" width="${w-20}" height="${h-20}"/>
+                    <svg:text text-anchor="middle" x="${w/2}" y="${h/2}" dominant-baseline="central">${text}</svg:text>
+                </svg:svg>
+            </div>
+            <div class="node-edit node-action"/>
+            <div class="node-delete node-action delete"/>
+        </div>
+    </script>
+
+    <div class="jtk-demo-main" id="jtk-demo-flowchart">
+
+
+            <!-- this is the main drawing area -->
+            <div class="jtk-demo-canvas">
+                <!-- controls -->
+                <div class="controls" can-undo="false" can-redo="false">
+                    <i class="fa fa-arrows selected-mode" mode="pan" title="Pan Mode"></i>
+                    <i class="fa fa-pencil" mode="select" title="Select Mode"></i>
+                    <i class="fa fa-home" reset title="Zoom To Fit"></i>
+                    <i class="fa fa-undo" undo title="Undo last action"></i>
+                    <i class="fa fa-repeat" redo title="Redo last action"></i>
+                    <i class="fa fa-times" clear title="Clear flowchart"></i>
+                </div>
+                <!-- miniview -->
+                <div class="miniview"></div>
+            </div>
+            <div class="jtk-demo-rhs">
+                <!-- the node palette -->
+                <div class="sidebar node-palette">
+                    <div data-node-type="question" title="Drag to add new" class="sidebar-item" data-width="240" data-height="220">
+                        <i class="icon-tablet"></i>Question
+                    </div>
+                    <div data-node-type="action" title="Drag to add new" class="sidebar-item" data-width="240" data-height="160">
+                        <i class="icon-eye-open"></i>Action
+                    </div>
+                    <div data-node-type="output" title="Drag to add new" class="sidebar-item" data-width="240" data-height="160">
+                        <i class="icon-eye-open"></i>Output
+                    </div>
+                </div>
+
+                <div class="description">
+                    <p>
+                        This sample application is a builder for flowcharts. Questions, actions and outputs are supported.
+                    </p>
+                    <ul>
+                        <li>Drag from the palette above onto the workspace to add nodes</li>
+                        <li>Drag from the arrow icon on any node that has one to any other node to establish a link, then provide a description for the link's label</li>
+                        <li>Click a link to edit its label.</li>
+                        <li>Click the 'Pencil' icon to enter 'select' mode, then select several nodes. Click the canvas to exit.</li>
+                        <li>Click the 'Home' icon to zoom out and see all the nodes.</li>
+                    </ul>
+                </div>
+            </div>
+
+
+        </div>
+
+    <!-- base set of imports -->
+    <script src="node_modules/@jsplumb/util/js/jsplumb.util.umd.js"></script>
+    <script src="node_modules/@jsplumb/common/js/jsplumb.common.umd.js"></script>
+    <script src="node_modules/@jsplumb/core/js/jsplumb.core.umd.js"></script>
+    <script src="node_modules/@jsplumb/browser-ui/js/jsplumb.browser-ui.umd.js"></script>
+    <script src="node_modules/@jsplumbtoolkit/core/js/jsplumbtoolkit.core.umd.js"></script>
+    <script src="node_modules/@jsplumbtoolkit/templates/js/jsplumbtoolkit.templates.umd.js"></script>
+    <script src="node_modules/@jsplumbtoolkit/browser-ui/js/jsplumbtoolkit.browser-ui.umd.js"></script>
+    <script src="node_modules/@jsplumbtoolkit/browser-ui-templates/js/jsplumbtoolkit.browser-ui-templates.umd.js"></script>
+    <script src="node_modules/@jsplumbtoolkit/browser-ui-vanilla/js/jsplumbtoolkit.browser-ui-vanilla.umd.js"></script>
+
+    <!-- dialogs -->
+    <script src="node_modules/@jsplumbtoolkit/dialogs/js/jsplumbtoolkit.dialogs.umd.js"></script>
+
+    <!-- plugins for the Surface -->
+    <script src="node_modules/@jsplumbtoolkit/browser-ui-plugin-drawing-tools/js/jsplumbtoolkit.browser-ui-plugin-drawing-tools.umd.js"></script>
+    <script src="node_modules/@jsplumbtoolkit/browser-ui-plugin-lasso/js/jsplumbtoolkit.browser-ui-plugin-lasso.umd.js"></script>
+    <script src="node_modules/@jsplumbtoolkit/browser-ui-plugin-miniview/js/jsplumbtoolkit.browser-ui-plugin-miniview.umd.js"></script>
+
+    <!-- orthogonal connector and editor -->
+    <script src="node_modules/@jsplumbtoolkit/connector-orthogonal/js/jsplumbtoolkit.connector-orthogonal.umd.js"></script>
+    <script src="node_modules/@jsplumbtoolkit/connector-editors/js/jsplumbtoolkit.connector-editors.umd.js"></script>
+    <script src="node_modules/@jsplumbtoolkit/connector-editors-orthogonal/js/jsplumbtoolkit.connector-editors-orthogonal.umd.js"></script>
+
+    <!-- drag/drop new nodes -->
+    <script src="node_modules/@jsplumbtoolkit/drop/js/jsplumbtoolkit.drop.umd.js"></script>
+
+    <!-- the demo code -->
+    <script src="demo.js"></script>
+
+
+    </body>
+</html>

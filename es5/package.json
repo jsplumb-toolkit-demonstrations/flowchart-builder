@@ -1,0 +1,28 @@
+{
+  "name": "flowchart-builder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "demo.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jsplumb-toolkit-demonstrations/flowchart-builder.git"
+  },
+  "author": "jsPlumb <hello@jsplumbtoolkit.com> (https://jsplumbtoolkit.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jsplumb-toolkit-demonstrations/flowchart-builder/issues"
+  },
+  "homepage": "https://github.com/jsplumb-toolkit-demonstrations/flowchart-builder#readme",
+  "dependencies": {
+    "@jsplumbtoolkit/browser-ui-vanilla": "^5.0.0",
+    "@jsplumbtoolkit/drop": "^5.0.0",
+    "@jsplumbtoolkit/labels": "^5.0.0",
+    "@jsplumbtoolkit/print": "^5.0.0",
+    "@jsplumbtoolkit/dialogs": "^5.0.0",
+    "@jsplumbtoolkit/connector-editors-orthogonal": "^5.0.0",
+    "@jsplumbtoolkit/connector-orthogonal": "^5.0.0",
+    "@jsplumbtoolkit/browser-ui-plugin-drawing-tools": "^5.0.0",
+    "@jsplumbtoolkit/browser-ui-plugin-miniview": "^5.0.0",
+    "@jsplumbtoolkit/browser-ui-plugin-lasso": "^5.0.0"
+  }
+}
