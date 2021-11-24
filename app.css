@@ -62,6 +62,9 @@
 
 /* ------------------------ dialogs ----------------------------*/
 
+
+/* ------------------------ dialogs ----------------------------*/
+
 /* ----------------------- drag/drop interactions -------------- */
 .drop-hover {
     background-color: #FCCCCC !important;
@@ -73,8 +76,9 @@
     z-index: 10;
     border: none;
     overflow: visible;
-    align-items: flex-start;
-    justify-content: flex-start;
+    display:flex;
+    align-items: center;
+    justify-content: center;
     background-color:transparent;
 }
 
@@ -87,14 +91,12 @@
     top: 0;
 }
 
-.flowchart-object text {
-
-    stroke: none;
-    fill: black;
+.flowchart-object span {
+    color: black;
     font-family: "Open Sans",sans-serif;
     font-size: 14px;
     font-weight: 400;
-
+    z-index:10;
 }
 
 .flowchart-object .node-action {
@@ -192,6 +194,9 @@
     z-index:11;
 }
 
+
+/* --------------------- edge styles ----------------------------------- */
+
 /*
     style for the delete button. this is in fact supplied in the editable connectors css as a default but on our own site
     the cascade conspires to elide the background color and foreground color. Without wanting to mark the style as `!important` in our defaults stylesheet,
@@ -231,3 +236,4 @@ svg.jtk-drag-drop-hover path {
 .fa-times:after {
     content:"✖"
 }
+
