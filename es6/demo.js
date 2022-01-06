@@ -94,26 +94,26 @@ ready(() => {
     // Declare an instance of the Toolkit and supply a nodeFactory, used when adding new nodes, and a beforeConnect interceptor, used
     // to control what can be connected to what.
     const toolkit = newInstance({
-        nodeFactory: (type, data, callback) => {
+        nodeFactory: (type, data, continueCallback, abortCallback) => {
             dialogs.show({
                 id: "dlgText",
                 title: "Enter " + type + " name:",
                 onOK:  (d) => {
                     data.text = d.text;
                     // if the user entered a name...
-                    if (data.text) {
+                    if (data.text && data.text.length >= 2) {
                         // and it was at least 2 chars
-                        if (data.text.length >= 2) {
                             // set an id and continue.
-                            data.id = uuid()
-                            callback(data);
-                        }
-                        else
-                        // else advise the user.
-                            alert(type + " names must be at least 2 characters!");
+                        data.id = uuid();
+                        continueCallback(data);
                     }
-                    // else...do not proceed.
-                }
+                    else {
+                        // else advise the user, and abort. you must call abort because there is a pending transaction.
+                        alert(type + " names must be at least 2 characters!");
+                        abortCallback()
+                    }
+                },
+                onCancel:() => abortCallback()
             })
 
             return true

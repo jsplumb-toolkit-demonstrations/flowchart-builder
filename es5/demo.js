@@ -63,26 +63,26 @@ jsPlumbToolkitBrowserUIVanilla.ready(() => {
     // Declare an instance of the Toolkit and supply a nodeFactory, used when adding new nodes, and a beforeConnect interceptor, used
     // to control what can be connected to what.
     const toolkit = jsPlumbToolkitBrowserUIVanilla.newInstance({
-        nodeFactory: function(type, data, callback) {
+        nodeFactory: function(type, data, continueCallback, abortCallback) {
             dialogs.show({
                 id: "dlgText",
                 title: "Enter " + type + " name:",
                 onOK: function(d) {
                     data.text = d.text;
                     // if the user entered a name...
-                    if (data.text) {
+                    if (data.text && data.text.length >= 2) {
                         // and it was at least 2 chars
-                        if (data.text.length >= 2) {
-                            // set an id and continue.
-                            data.id = uuid()
-                            callback(data);
-                        }
-                        else
-                        // else advise the user.
-                            alert(type + " names must be at least 2 characters!");
+                        // set an id and continue.
+                        data.id = jsPlumbUtil.uuid();
+                        continueCallback(data);
                     }
-                    // else...do not proceed.
-                }
+                    else {
+                        // else advise the user, and abort
+                        alert(type + " names must be at least 2 characters!");
+                        abortCallback();
+                    }
+                },
+                onCancel:function() { abortCallback(); }
             });
 
             return true;
