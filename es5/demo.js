@@ -276,7 +276,7 @@ jsPlumbToolkitBrowserUIVanilla.ready(() => {
 
     // listener for mode change on renderer.
     renderer.bind("modeChanged", function(mode) {
-        forEach(controls.querySelectorAll("[mode]"), function(e) {
+        jsPlumbUtil.forEach(controls.querySelectorAll("[mode]"), function(e) {
             renderer.removeClass(e, "selected-mode")
         })
 
