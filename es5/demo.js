@@ -12,7 +12,7 @@ const SOURCE = "source"
 const TARGET = "target"
 
 
-jsPlumbToolkitBrowserUIVanilla.ready(() => {
+jsPlumbToolkitBrowserUIVanilla2.ready(() => {
 
 
 // ------------------------- dialogs -------------------------------------
@@ -62,7 +62,7 @@ jsPlumbToolkitBrowserUIVanilla.ready(() => {
 
     // Declare an instance of the Toolkit and supply a nodeFactory, used when adding new nodes, and a beforeConnect interceptor, used
     // to control what can be connected to what.
-    const toolkit = jsPlumbToolkitBrowserUIVanilla.newInstance({
+    const toolkit = jsPlumbToolkitBrowserUIVanilla2.newInstance({
         nodeFactory: function(type, data, continueCallback, abortCallback) {
             dialogs.show({
                 id: "dlgText",

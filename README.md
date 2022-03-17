@@ -8,6 +8,8 @@ This is a simple flowchart builder application, with support for questions, acti
 
 This repository contains examples in Typescript, ES6 and ES5. On this page we'll use the Typescript version as a reference.
 
+NOTE: this branch - `templates-2` - uses the `@jsplumbtoolkit/browser-ui-vanilla-2` package, which is new in 5.6.0, and which uses a new template engine, which has a few differences to the original vanilla template engine.
+
 ---
 
 <a name="setup"></a>
@@ -50,7 +52,7 @@ These are the jsPlumb specific imports, which are the same across all 3 versions
 
 ```json
 "dependencies": {
-    "@jsplumbtoolkit/browser-ui-vanilla": "^5.0.0",
+    "@jsplumbtoolkit/browser-ui-vanilla-2": "^5.0.0",
     "@jsplumbtoolkit/drop": "^5.0.0",
     "@jsplumbtoolkit/labels": "^5.0.0",
     "@jsplumbtoolkit/print": "^5.0.0",
@@ -76,11 +78,11 @@ for the `Start` node. The templates look like this:
 
 ```xml
 <script type="jtk" id="tmplStart">
-    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-start">
+    <div style="left:{{left}}px;top:{{top}}px;width:{{w}}px;height:{{h}}px;" class="flowchart-object flowchart-start">
         <div style="position:relative">
-            <svg:svg width="${w}" height="${h}">
-                <svg:ellipse cx="${w/2}" cy="${h/2}" rx="${(w/2) - 10}" ry="${(h/2) - 10}"/>
-                <svg:text text-anchor="middle" x="${ w / 2 }" y="${ h / 2 }" dominant-baseline="central">${text}</svg:text>
+            <svg:svg width="{{w}}" height="{{h}}">
+                <svg:ellipse cx="{{w/2}}" cy="{{h/2}}" rx="{{(w/2) - 10}}" ry="{{(h/2) - 10}}"/>
+                <svg:text text-anchor="middle" x="{{ w / 2 }}" y="{{ h / 2 }}" dominant-baseline="central">{{text}}</svg:text>
             </svg:svg>
         </div>
         <div class="drag-start connect" data-jtk-source="true" data-jtk-port-type="source"></div>
@@ -89,8 +91,7 @@ for the `Start` node. The templates look like this:
 ```
 
 The **Start** node consists of an ellipse with a text label centered inside of it. Note here how all SVG elements are 
-required to be declared in the `svg:` namespace. This is a requirement of [Knockle](templating#knockle) and would not 
-necessarily apply if you were using some other template engine.
+required to be declared in the `svg:` namespace. This is a requirement of Recado, the new version of the vanilla templating engine, and would not necessarily apply if you were using some other template engine.
 
 In this template we can see the `w`, `h`, `left` and `top` values from the node's data being used not just to position 
 the element but also to provide appropriate values for the ellipse and text label.
@@ -101,11 +102,11 @@ The `.drag-start` element declares, via the `data-jtk-source` attribute, that th
 
 ```xml
 <script type="jtk" id="tmplAction">
-    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-action" data-jtk-target="true" data-jtk-target-port-type="target">
+    <div style="left:{{left}}px;top:{{top}}px;width:{{w}}px;height:{{h}}px;" class="flowchart-object flowchart-action" data-jtk-target="true" data-jtk-target-port-type="target">
         <div style="position:relative">
-            <svg:svg width="${w}" height="${h}">
-                <svg:rect x="10" y="10" width="${w-20}" height="${h-20}"/>
-                <svg:text text-anchor="middle" x="${w/2}" y="${h/2}" dominant-baseline="central">${text}</svg:text>
+            <svg:svg width="{{w}}" height="{{h}}">
+                <svg:rect x="10" y="10" width="{{w-20}}" height="{{h-20}}"/>
+                <svg:text text-anchor="middle" x="{{w/2}}" y="{{h/2}}" dominant-baseline="central">{{text}}</svg:text>
             </svg:svg>
         </div>
         <div class="node-edit node-action"/>
@@ -115,18 +116,17 @@ The `.drag-start` element declares, via the `data-jtk-source` attribute, that th
 </script>
 ```
 
-Once again we use the position and dimensions for the node's main container as well as its SVG elements. **Action** nodes 
-are configured as targets, via the `data-jtk-target` attribute, with a target port type of `"target"`, which is specified by the value of the `data-jtk-target-port-type` attribute. As with **Start** nodes, there is a `.drag-start` element that acts as a source for connections dragged from the node.
+Once again we use the position and dimensions for the node's main container as well as its SVG elements. **Action** nodes are configured as targets, via the `data-jtk-target` attribute, with a target port type of `"target"`, which is specified by the value of the `data-jtk-target-port-type` attribute. As with **Start** nodes, there is a `.drag-start` element that acts as a source for connections dragged from the node.
 
 **Question**
 
 ```xml
 <script type="jtk" id="tmplQuestion">
-    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-question" data-jtk-target="true" data-jtk-target-port-type="target">
+    <div style="left:{{left}}px;top:{{top}}px;width:{{w}}px;height:{{h}}px;" class="flowchart-object flowchart-question" data-jtk-target="true" data-jtk-target-port-type="target">
         <div style="position:relative">
-            <svg:svg width="${w}" height="${h}">
-                <svg:path d="M ${w/2} 10 L ${w-10} ${h/2} L ${w/2} ${h-10} L 10 ${h/2} Z"/>
-                <svg:text text-anchor="middle" x="${w/2}" y="${h/2}" dominant-baseline="central">${text}</svg:text>
+            <svg:svg width="{{w}}" height="{{h}}">
+                <svg:path d="M {{w/2}} 10 L {{w-10}} {{h/2}} L {{w/2}} {{h-10}} L 10 {{h/2}} Z"/>
+                <svg:text text-anchor="middle" x="{{w/2}}" y="{{h/2}}" dominant-baseline="central">{{text}}</svg:text>
             </svg:svg>
         </div>
         <div class="node-edit node-action"/>
@@ -142,11 +142,11 @@ The **Question** node differs only from **Action** in that it draws a diamond ra
 
 ```xml
  <script type="jtk" id="tmplOutput">
-     <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-output" data-jtk-target="true" data-jtk-target-port-type="target">
+     <div style="left:{{left}}px;top:{{top}}px;width:{{w}}px;height:{{h}}px;" class="flowchart-object flowchart-output" data-jtk-target="true" data-jtk-target-port-type="target">
          <div style="position:relative">
-             <svg:svg width="${w}" height="${h}">
-                 <svg:rect x="10" y="10" width="${w-20}" height="${h-20}"/>
-                 <svg:text text-anchor="middle" x="${w/2}" y="${h/2}" dominant-baseline="central">${text}</svg:text>
+             <svg:svg width="{{w}}" height="{{h}}">
+                 <svg:rect x="10" y="10" width="{{w-20}}" height="{{h-20}}"/>
+                 <svg:text text-anchor="middle" x="{{w/2}}" y="{{h/2}}" dominant-baseline="central">{{text}}</svg:text>
              </svg:svg>
          </div>
          <div class="node-edit node-action"/>
@@ -169,7 +169,7 @@ We use `newInstance` to create a new Toolkit, passing in a `nodeFactory` - a met
 
 ```javascript
 
-import { newInstance } from "@jsplumbtoolkit/browser-ui-vanilla"}
+import { newInstance } from "@jsplumbtoolkit/browser-ui-vanilla-2"}
 
 const toolkit = newInstance({
     nodeFactory: (type:string, data:any, callback:Function) => {
@@ -281,7 +281,6 @@ createSurfaceManager({
 - **selector** A CSS3 selector identifying the draggable items inside `source`. Required.
 - **surface** The Surface widget to attach to. Required.
 - **dataGenerator** This function is used by the Toolkit to generate an initial dataset for a Node you have begun to drag. Required.
-whenever a new node is dropped on whitespace.
 
 `SurfaceDropManager` is an extension of the Drop Manager which provides default implementations for the various drop functions. By default, the Surface Drop Manager is configured to allow nodes/groups to be dropped onto the canvas or an existing edge, and for nodes to be dropped on groups.
 
@@ -774,7 +773,7 @@ identical to a `question` node, with the only differences being the SVG `path` e
 
 ```xml
 <script type="jtk" id="tmplUncertainty">
-    <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-question" data-jtk-target="true" data-jtk-target-port-type="target">
+    <div style="left:{{left}}px;top:{{top}}px;width:{{w}}px;height:{{h}}px;" class="flowchart-object flowchart-question" data-jtk-target="true" data-jtk-target-port-type="target">
         <div style="position:relative">
             <div class="node-edit node-action">
                 <i class="fa fa-pencil-square-o"/>
@@ -782,9 +781,9 @@ identical to a `question` node, with the only differences being the SVG `path` e
             <div class="node-delete node-action">
                 <i class="fa fa-times"/>
             </div>
-            <svg:svg width="${w}" height="${h}">
-                <svg:path d="M ${w/2} 0 L ${w} ${h} L 0 ${h} L ${w/2} 0 Z" class="outer"/>
-                <svg:text text-anchor="middle" x="${w/2}" y="${h/2}" dominant-baseline="central">${text}</svg:text>
+            <svg:svg width="{{w}}" height="{{h}}">
+                <svg:path d="M {{w/2}} 0 L {{w}} {{h}} L 0 {{h}} L {{w/2}} 0 Z" class="outer"/>
+                <svg:text text-anchor="middle" x="{{w/2}}" y="{{h/2}}" dominant-baseline="central">{{text}}</svg:text>
             </svg:svg>
         </div>
         <div class="drag-start connect" data-jtk-source="true" data-jtk-port-type="source"></div>

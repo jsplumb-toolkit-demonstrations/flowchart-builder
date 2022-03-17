@@ -18,21 +18,21 @@
     <!-- content -->
 
     <script type="jtk" id="tmplStart">
-        <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-start">
-            <svg:svg width="${w}" height="${h}">
-                <svg:ellipse cx="${w/2}" cy="${h/2}" rx="${(w/2) - 10}" ry="${(h/2) - 10}"/>
+        <div style="left:{{left}}px;top:{{top}}px;width:{{w}}px;height:{{h}}px;" class="flowchart-object flowchart-start">
+            <svg:svg width="{{w}}" height="{{h}}">
+                <svg:ellipse cx="{{w/2}}" cy="{{h/2}}" rx="{{(w/2) - 10}}" ry="{{(h/2) - 10}}"/>
             </svg:svg>
-            <span>${text}</span>
+            <span>{{text}}</span>
             <div class="drag-start connect" data-jtk-source="true" data-jtk-port-type="source"></div>
         </div>
     </script>
 
         <script type="jtk" id="tmplAction">
-        <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-action" data-jtk-target="true" data-jtk-target-port-type="target">
-            <svg:svg width="${w}" height="${h}">
-                <svg:rect x="10" y="10" width="${w-20}" height="${h-20}"/>
+        <div style="left:{{left}}px;top:{{top}}px;width:{{w}}px;height:{{h}}px;" class="flowchart-object flowchart-action" data-jtk-target="true" data-jtk-target-port-type="target">
+            <svg:svg width="{{w}}" height="{{h}}">
+                <svg:rect x="10" y="10" width="{{w-20}}" height="{{h-20}}"/>
             </svg:svg>
-            <span>${text}</span>
+            <span>{{text}}</span>
             <div class="node-edit node-action"/>
             <div class="node-delete node-action delete"/>
             <div class="drag-start connect" data-jtk-source="true" data-jtk-port-type="source"></div>
@@ -40,11 +40,11 @@
     </script>
 
         <script type="jtk" id="tmplQuestion">
-        <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-question" data-jtk-target="true" data-jtk-target-port-type="target">
-            <svg:svg width="${w}" height="${h}">
-                <svg:path d="M ${w/2} 10 L ${w-10} ${h/2} L ${w/2} ${h-10} L 10 ${h/2} Z"/>
+        <div style="left:{{left}}px;top:{{top}}px;width:{{w}}px;height:{{h}}px;" class="flowchart-object flowchart-question" data-jtk-target="true" data-jtk-target-port-type="target">
+            <svg:svg width="{{w}}" height="{{h}}">
+                <svg:path d="M {{w/2}} 10 L {{w-10}} {{h/2}} L {{w/2}} {{h-10}} L 10 {{h/2}} Z"/>
             </svg:svg>
-            <span>${text}</span>
+            <span>{{text}}</span>
             <div class="node-edit node-action"/>
             <div class="node-delete node-action delete"/>
             <div class="drag-start connect" data-jtk-source="true" data-jtk-port-type="source"></div>
@@ -52,11 +52,11 @@
     </script>
 
         <script type="jtk" id="tmplOutput">
-        <div style="left:${left}px;top:${top}px;width:${w}px;height:${h}px;" class="flowchart-object flowchart-output" data-jtk-target="true" data-jtk-target-port-type="target">
-            <svg:svg width="${w}" height="${h}">
-                <svg:rect x="10" y="10" width="${w-20}" height="${h-20}"/>
+        <div style="left:{{left}}px;top:{{top}}px;width:{{w}}px;height:{{h}}px;" class="flowchart-object flowchart-output" data-jtk-target="true" data-jtk-target-port-type="target">
+            <svg:svg width="{{w}}" height="{{h}}">
+                <svg:rect x="10" y="10" width="{{w-20}}" height="{{h-20}}"/>
             </svg:svg>
-            <span>${text}</span>
+            <span>{{text}}</span>
             <div class="node-edit node-action"/>
             <div class="node-delete node-action delete"/>
         </div>

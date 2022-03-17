@@ -15,7 +15,7 @@ import {
     DEFAULT,
     ready,
     newInstance
-} from "@jsplumbtoolkit/browser-ui-vanilla"
+} from "@jsplumbtoolkit/browser-ui-vanilla-2"
 
 import {
     Edge,
