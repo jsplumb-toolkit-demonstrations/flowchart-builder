@@ -17,16 +17,16 @@
     },
     "homepage": "https://github.com/jsplumb-toolkit-demonstrations/flowchart-builder#readme",
     "dependencies": {
-        "@jsplumbtoolkit/browser-ui-vanilla-2": "^5.9.0",
-        "@jsplumbtoolkit/drop": "^5.9.0",
-        "@jsplumbtoolkit/labels": "^5.9.0",
-        "@jsplumbtoolkit/print": "^5.9.0",
-        "@jsplumbtoolkit/dialogs": "^5.9.0",
-        "@jsplumbtoolkit/connector-editors-orthogonal": "^5.9.0",
-        "@jsplumbtoolkit/connector-orthogonal": "^5.9.0",
-        "@jsplumbtoolkit/browser-ui-plugin-drawing-tools": "^5.9.0",
-        "@jsplumbtoolkit/browser-ui-plugin-miniview": "^5.9.0",
-        "@jsplumbtoolkit/browser-ui-plugin-lasso": "^5.9.0"
+        "@jsplumbtoolkit/browser-ui-vanilla-2": "^5.10.0",
+        "@jsplumbtoolkit/drop": "^5.10.0",
+        "@jsplumbtoolkit/labels": "^5.10.0",
+        "@jsplumbtoolkit/print": "^5.10.0",
+        "@jsplumbtoolkit/dialogs": "^5.10.0",
+        "@jsplumbtoolkit/connector-editors-orthogonal": "^5.10.0",
+        "@jsplumbtoolkit/connector-orthogonal": "^5.10.0",
+        "@jsplumbtoolkit/browser-ui-plugin-drawing-tools": "^5.10.0",
+        "@jsplumbtoolkit/browser-ui-plugin-miniview": "^5.10.0",
+        "@jsplumbtoolkit/browser-ui-plugin-lasso": "^5.10.0"
     },
     "devDependencies": {
         "@types/node": "14.17.3",
@@ -41,6 +41,6 @@
         "@rollup/plugin-node-resolve": "^9.0.0",
         "babel-loader": "^8.0.6",
         "rollup": "^2.26.11",
-        "typescript": "~3.4.0"
+        "typescript": "^4.0.0"
     }
 }
