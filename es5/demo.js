@@ -17,7 +17,7 @@ jsPlumbToolkitBrowserUIVanilla2.ready(() => {
 
 // ------------------------- dialogs -------------------------------------
 
-    const dialogs = jsPlumbToolkitDialogs.newInstance({
+    const dialogs = jsPlumbToolkitDialogs2.newInstance({
 
         dialogs: {
             "dlgText": {
