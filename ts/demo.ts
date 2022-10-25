@@ -41,6 +41,8 @@ import * as ConnectorEditorOrthogonal from "@jsplumbtoolkit/connector-editors-or
 import {LassoPlugin} from "@jsplumbtoolkit/browser-ui-plugin-lasso"
 import {CancelFunction} from "@jsplumbtoolkit/dialogs"
 
+import {GeneratedGridBackground, GridTypes, BackgroundPlugin} from "@jsplumbtoolkit/browser-ui-plugin-background"
+
 ConnectorEditorOrthogonal.initialize()
 
 const START = "start"
@@ -260,8 +262,8 @@ ready(() => {
         },
         grid:{
             size:{
-                w:20,
-                h:20
+                w:50,
+                h:50
             }
         },
         events: {
@@ -287,6 +289,16 @@ ready(() => {
                 options: {
                     lassoInvert:true,
                     lassoEdges:true
+                }
+            },
+            {
+                type:BackgroundPlugin.type,
+                options:{
+                    minWidth:5000,
+                    minHeight:5000,
+                    type:GeneratedGridBackground.type,
+                    gridType:GridTypes.dotted,
+                    showTickMarks:false
                 }
             }
         ],
