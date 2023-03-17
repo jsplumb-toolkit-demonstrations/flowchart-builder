@@ -21,17 +21,17 @@ jsPlumbToolkitBrowserUIVanilla2.ready(() => {
 
         dialogs: {
             "dlgText": {
-                template: '<input type="text" size="50" jtk-focus jtk-att="text" value="${text}" jtk-commit="true"/>',
+                template: '<input type="text" size="50" jtk-focus jtk-att="text" value="{{text}}" jtk-commit="true"/>',
                 title: 'Enter Text',
                 cancelable: true
             },
             "dlgConfirm":{
-                template:'${msg}',
+                template:'{{msg}}',
                 title:'Please Confirm',
                 cancelable:true
             },
             "dlgMessage": {
-                template:'${msg}',
+                template:'{{msg}}',
                 title:"Message",
                 cancelable:false
             }
