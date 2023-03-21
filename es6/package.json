@@ -1,6 +1,6 @@
 {
     "name": "flowchart-builder",
-    "version": "5.8.0",
+    "version": "6.x",
     "description": "",
     "main": "demo.js",
     "scripts": {
@@ -17,20 +17,9 @@
     },
     "homepage": "https://github.com/jsplumb-toolkit-demonstrations/flowchart-builder#readme",
     "dependencies": {
-        "@jsplumbtoolkit/browser-ui-vanilla-2": "^5.12.0",
-        "@jsplumbtoolkit/drop": "^5.12.0",
-        "@jsplumbtoolkit/labels": "^5.12.0",
-        "@jsplumbtoolkit/print": "^5.12.0",
-        "@jsplumbtoolkit/dialogs": "^5.12.0",
-        "@jsplumbtoolkit/connector-editors-orthogonal": "^5.12.0",
-        "@jsplumbtoolkit/connector-orthogonal": "^5.12.0",
-        "@jsplumbtoolkit/browser-ui-plugin-drawing-tools": "^5.12.0",
-        "@jsplumbtoolkit/browser-ui-plugin-miniview": "^5.12.0",
-        "@jsplumbtoolkit/browser-ui-plugin-lasso": "^5.12.0"
+        "@jsplumbtoolkit/all": "file:../../../toolkit-6/dist/all"
     },
     "devDependencies": {
-        "@types/node": "14.17.3",
-        "@types/estree": "0.0.47",
         "@babel/cli": "^7.4.4",
         "@babel/core": "^7.4.4",
         "@babel/plugin-proposal-class-properties": "^7.4.4",
@@ -38,6 +27,8 @@
         "@babel/preset-env": "^7.4.4",
         "@rollup/plugin-commonjs": "^15.0.0",
         "@rollup/plugin-node-resolve": "^9.0.0",
+        "@types/estree": "0.0.47",
+        "@types/node": "14.17.3",
         "babel-loader": "^8.0.6",
         "rollup": "^2.26.11"
     }

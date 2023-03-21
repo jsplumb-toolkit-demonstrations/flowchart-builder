@@ -1,36 +1,59 @@
-import * as Dialogs from "@jsplumbtoolkit/dialogs"
+// import * as Dialogs from "@jsplumbtoolkit/dialogs"
+//
+// import {
+//     EVENT_TAP,
+//     EVENT_CANVAS_CLICK,
+//     EVENT_SURFACE_MODE_CHANGED,
+//     BlankEndpoint,
+//     ArrowOverlay,
+//     LabelOverlay,
+//     AnchorLocations,
+//     DEFAULT,
+//     ready,
+//     newInstance
+// } from "@jsplumbtoolkit/browser-ui-vanilla-2"
+//
+// import {
+//     AbsoluteLayout,
+//     uuid,
+//     forEach,
+//     EVENT_UNDOREDO_UPDATE
+// } from "@jsplumbtoolkit/core"
+//
+// import { EdgePathEditor } from "@jsplumbtoolkit/connector-editors"
+// import { createSurfaceManager } from "@jsplumbtoolkit/drop"
+// import { registerHandler } from "@jsplumbtoolkit/print"
+// import {DrawingToolsPlugin} from "@jsplumbtoolkit/browser-ui-plugin-drawing-tools"
+// import {MiniviewPlugin} from "@jsplumbtoolkit/browser-ui-plugin-miniview"
+// import {OrthogonalConnector} from "@jsplumbtoolkit/connector-orthogonal"
+//
+// import * as ConnectorEditorOrthogonal from "@jsplumbtoolkit/connector-editors-orthogonal"
+// import {LassoPlugin} from "@jsplumbtoolkit/browser-ui-plugin-lasso"
 
 import {
-    EVENT_TAP,
-    EVENT_CANVAS_CLICK,
-    EVENT_SURFACE_MODE_CHANGED,
-    BlankEndpoint,
-    ArrowOverlay,
-    LabelOverlay,
+    Dialogs,
+    newDomUIVanillaInstance,
     AnchorLocations,
+    ENDPOINT_TYPE_BLANK,
+    CONNECTOR_TYPE_ORTHOGONAL,
+    EVENT_CANVAS_CLICK,
+    MiniviewPlugin,
+    DrawingToolsPlugin,
+    LassoPlugin,
+    createSurfaceManager,
+    EdgePathEditor,
+    EVENT_UNDOREDO_UPDATE,
+    EVENT_TAP,
+    EVENT_SURFACE_MODE_CHANGED,
+    OVERLAY_TYPE_ARROW,
+    OVERLAY_TYPE_LABEL,
     DEFAULT,
     ready,
-    newInstance
-} from "@jsplumbtoolkit/browser-ui-vanilla-2"
+    AbsoluteLayout
 
-import {
-    AbsoluteLayout,
-    uuid,
-    forEach,
-    EVENT_UNDOREDO_UPDATE
-} from "@jsplumbtoolkit/core"
+} from "@jsplumbtoolkit/all"
 
-import { EdgePathEditor } from "@jsplumbtoolkit/connector-editors"
-import { createSurfaceManager } from "@jsplumbtoolkit/drop"
-import { registerHandler } from "@jsplumbtoolkit/print"
-import {DrawingToolsPlugin} from "@jsplumbtoolkit/browser-ui-plugin-drawing-tools"
-import {MiniviewPlugin} from "@jsplumbtoolkit/browser-ui-plugin-miniview"
-import {OrthogonalConnector} from "@jsplumbtoolkit/connector-orthogonal"
-
-import * as ConnectorEditorOrthogonal from "@jsplumbtoolkit/connector-editors-orthogonal"
-import {LassoPlugin} from "@jsplumbtoolkit/browser-ui-plugin-lasso"
-
-ConnectorEditorOrthogonal.initialize()
+// ConnectorEditorOrthogonal.initialize()
 
 const START = "start"
 const OUTPUT = "output"
@@ -47,21 +70,21 @@ ready(() => {
 
 // ------------------------- dialogs -------------------------------------
 
-    const dialogs = Dialogs.newInstance({
+    const dialogs = new Dialogs({
 
         dialogs: {
             "dlgText": {
-                template: '<input type="text" size="50" jtk-focus jtk-att="text" value="${text}" jtk-commit="true"/>',
+                template: '<input type="text" size="50" jtk-focus jtk-att="text" value="{{text}}" jtk-commit="true"/>',
                 title: 'Enter Text',
                 cancelable: true
             },
             "dlgConfirm":{
-                template:'${msg}',
+                template:'{{msg}}',
                 title:'Please Confirm',
                 cancelable:true
             },
             "dlgMessage": {
-                template:'${msg}',
+                template:'{{msg}}',
                 title:"Message",
                 cancelable:false
             }
@@ -93,7 +116,7 @@ ready(() => {
 
     // Declare an instance of the Toolkit and supply a nodeFactory, used when adding new nodes, and a beforeConnect interceptor, used
     // to control what can be connected to what.
-    const toolkit = newInstance({
+    const toolkit = newDomUIVanillaInstance({
         nodeFactory: (type, data, continueCallback, abortCallback) => {
             dialogs.show({
                 id: "dlgText",
@@ -185,8 +208,8 @@ ready(() => {
             edges: {
                 [DEFAULT]: {
                     anchor:AnchorLocations.AutoDefault,
-                    endpoint:BlankEndpoint.type,
-                    connector: {type:OrthogonalConnector.type, options:{ cornerRadius: 3 } },
+                    endpoint:ENDPOINT_TYPE_BLANK,
+                    connector: {type:CONNECTOR_TYPE_ORTHOGONAL, options:{ cornerRadius: 3 } },
                     paintStyle: { strokeWidth: 2, stroke: "rgb(132, 172, 179)", outlineWidth: 3, outlineStroke: "transparent" },	//	paint style for this edge type.
                     hoverPaintStyle: { strokeWidth: 2, stroke: "rgb(67,67,67)" }, // hover paint style for this edge type.
                     events: {
@@ -206,16 +229,16 @@ ready(() => {
                         }
                     },
                     overlays: [
-                        { type:ArrowOverlay.type, options:{ location: 1, width: 10, length: 10 }}
+                        { type:OVERLAY_TYPE_ARROW, options:{ location: 1, width: 10, length: 10 }}
                     ]
                 },
                 [RESPONSE]:{
                     parent:DEFAULT,
                     overlays:[
                         {
-                            type: LabelOverlay.type,
+                            type: OVERLAY_TYPE_LABEL,
                             options: {
-                                label: "${label}",
+                                label: "{{label}}",
                                 events: {
                                     click: (params) => {
                                         _editLabel(params.edge);
@@ -402,7 +425,7 @@ ready(() => {
 // -------------------- printing --------------------------
 
     // register a handler in the client side. the server will look for the handler with this ID.
-    registerHandler(renderer, "jsplumb-demo-print");
+   // registerHandler(renderer, "jsplumb-demo-print");
 
 })
 
