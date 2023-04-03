@@ -1,6 +1,5 @@
-import * as Dialogs from "@jsplumbtoolkit/dialogs"
-
 import {
+    Dialogs,
     SurfaceRenderOptions,
     Surface,
     EVENT_TAP,
@@ -14,11 +13,7 @@ import {
     AnchorLocations,
     DEFAULT,
     ready,
-    newInstance
-} from "@jsplumbtoolkit/browser-ui-vanilla-2"
-
-import {
-    Edge,
+    newInstance,Edge,
     Vertex,
     ObjectInfo,
     AbsoluteLayout,
@@ -27,23 +22,18 @@ import {
     EVENT_UNDOREDO_UPDATE,
     UndoRedoUpdateParams,
     ObjectData,
-    extend
-} from "@jsplumbtoolkit/core"
-
-import { EdgePathEditor } from "@jsplumbtoolkit/connector-editors"
-import { createSurfaceManager } from "@jsplumbtoolkit/drop"
-import { registerHandler } from "@jsplumbtoolkit/print"
-import {DrawingToolsPlugin} from "@jsplumbtoolkit/browser-ui-plugin-drawing-tools"
-import {MiniviewPlugin} from "@jsplumbtoolkit/browser-ui-plugin-miniview"
-import {OrthogonalConnector} from "@jsplumbtoolkit/connector-orthogonal"
-
-import * as ConnectorEditorOrthogonal from "@jsplumbtoolkit/connector-editors-orthogonal"
-import {LassoPlugin} from "@jsplumbtoolkit/browser-ui-plugin-lasso"
-import {CancelFunction} from "@jsplumbtoolkit/dialogs"
-
-import {GeneratedGridBackground, GridTypes, BackgroundPlugin} from "@jsplumbtoolkit/browser-ui-plugin-background"
-
-ConnectorEditorOrthogonal.initialize()
+    EdgePathEditor,
+    createSurfaceDropManager,
+    registerHandler,
+    DrawingToolsPlugin,
+    MiniviewPlugin,
+    OrthogonalConnector,
+    LassoPlugin,
+    CancelFunction,
+    GeneratedGridBackground,
+    GridTypes,
+    BackgroundPlugin
+} from "@jsplumbtoolkit/browser-ui"
 
 const START = "start"
 const OUTPUT = "output"
@@ -60,21 +50,21 @@ ready(() => {
 
 // ------------------------- dialogs -------------------------------------
 
-    const dialogs = Dialogs.newInstance({
+    const dialogs = new Dialogs ({
 
         dialogs: {
             "dlgText": {
-                template: '<input type="text" size="50" jtk-focus jtk-att="text" value="${text}" jtk-commit="true"/>',
+                template: '<input type="text" size="50" jtk-focus jtk-att="text" value="{{text}}" jtk-commit="true"/>',
                 title: 'Enter Text',
                 cancelable: true
             },
             "dlgConfirm":{
-                template:'${msg}',
+                template:'{{msg}}',
                 title:'Please Confirm',
                 cancelable:true
             },
             "dlgMessage": {
-                template:'${msg}',
+                template:'{{msg}}',
                 title:"Message",
                 cancelable:false
             }
@@ -409,10 +399,10 @@ ready(() => {
     //  selector: css3 selector identifying elements inside `source` that ae draggable
     //  dataGenerator: this function takes a DOM element and returns some default data for a node of the type represented by the element.
 
-    createSurfaceManager({
+    createSurfaceDropManager({
         source:nodePalette,
         selector:"div",
-        dataGenerator: function (el) {
+        dataGenerator: (el:Element) => {
             return {
                 w: parseInt(el.getAttribute('data-width'), 10),
                 h: parseInt(el.getAttribute('data-height'), 10),

@@ -1,59 +1,27 @@
-// import * as Dialogs from "@jsplumbtoolkit/dialogs"
-//
-// import {
-//     EVENT_TAP,
-//     EVENT_CANVAS_CLICK,
-//     EVENT_SURFACE_MODE_CHANGED,
-//     BlankEndpoint,
-//     ArrowOverlay,
-//     LabelOverlay,
-//     AnchorLocations,
-//     DEFAULT,
-//     ready,
-//     newInstance
-// } from "@jsplumbtoolkit/browser-ui-vanilla-2"
-//
-// import {
-//     AbsoluteLayout,
-//     uuid,
-//     forEach,
-//     EVENT_UNDOREDO_UPDATE
-// } from "@jsplumbtoolkit/core"
-//
-// import { EdgePathEditor } from "@jsplumbtoolkit/connector-editors"
-// import { createSurfaceManager } from "@jsplumbtoolkit/drop"
-// import { registerHandler } from "@jsplumbtoolkit/print"
-// import {DrawingToolsPlugin} from "@jsplumbtoolkit/browser-ui-plugin-drawing-tools"
-// import {MiniviewPlugin} from "@jsplumbtoolkit/browser-ui-plugin-miniview"
-// import {OrthogonalConnector} from "@jsplumbtoolkit/connector-orthogonal"
-//
-// import * as ConnectorEditorOrthogonal from "@jsplumbtoolkit/connector-editors-orthogonal"
-// import {LassoPlugin} from "@jsplumbtoolkit/browser-ui-plugin-lasso"
 
 import {
     Dialogs,
-    newDomUIVanillaInstance,
+    newInstance,
     AnchorLocations,
-    ENDPOINT_TYPE_BLANK,
-    CONNECTOR_TYPE_ORTHOGONAL,
+    BlankEndpoint,
+    OrthogonalConnector,
     EVENT_CANVAS_CLICK,
     MiniviewPlugin,
     DrawingToolsPlugin,
     LassoPlugin,
-    createSurfaceManager,
+    createSurfaceDropManager,
     EdgePathEditor,
     EVENT_UNDOREDO_UPDATE,
     EVENT_TAP,
     EVENT_SURFACE_MODE_CHANGED,
-    OVERLAY_TYPE_ARROW,
-    OVERLAY_TYPE_LABEL,
+    ArrowOverlay,
+    LabelOverlay,
     DEFAULT,
     ready,
     AbsoluteLayout
 
-} from "@jsplumbtoolkit/all"
+} from "@jsplumbtoolkit/browser-ui"
 
-// ConnectorEditorOrthogonal.initialize()
 
 const START = "start"
 const OUTPUT = "output"
@@ -116,7 +84,7 @@ ready(() => {
 
     // Declare an instance of the Toolkit and supply a nodeFactory, used when adding new nodes, and a beforeConnect interceptor, used
     // to control what can be connected to what.
-    const toolkit = newDomUIVanillaInstance({
+    const toolkit = newInstance({
         nodeFactory: (type, data, continueCallback, abortCallback) => {
             dialogs.show({
                 id: "dlgText",
@@ -208,8 +176,8 @@ ready(() => {
             edges: {
                 [DEFAULT]: {
                     anchor:AnchorLocations.AutoDefault,
-                    endpoint:ENDPOINT_TYPE_BLANK,
-                    connector: {type:CONNECTOR_TYPE_ORTHOGONAL, options:{ cornerRadius: 3 } },
+                    endpoint:BlankEndpoint.type,
+                    connector: {type:OrthogonalConnector.type, options:{ cornerRadius: 3 } },
                     paintStyle: { strokeWidth: 2, stroke: "rgb(132, 172, 179)", outlineWidth: 3, outlineStroke: "transparent" },	//	paint style for this edge type.
                     hoverPaintStyle: { strokeWidth: 2, stroke: "rgb(67,67,67)" }, // hover paint style for this edge type.
                     events: {
@@ -229,14 +197,14 @@ ready(() => {
                         }
                     },
                     overlays: [
-                        { type:OVERLAY_TYPE_ARROW, options:{ location: 1, width: 10, length: 10 }}
+                        { type:ArrowOverlay.type, options:{ location: 1, width: 10, length: 10 }}
                     ]
                 },
                 [RESPONSE]:{
                     parent:DEFAULT,
                     overlays:[
                         {
-                            type: OVERLAY_TYPE_LABEL,
+                            type: LabelOverlay.type,
                             options: {
                                 label: "{{label}}",
                                 events: {
@@ -407,10 +375,10 @@ ready(() => {
     //  selector: css3 selector identifying elements inside `source` that ae draggable
     //  dataGenerator: this function takes a DOM element and returns some default data for a node of the type represented by the element.
 
-    createSurfaceManager({
+    createSurfaceDropManager({
         source:nodePalette,
         selector:"div",
-        dataGenerator: function (el) {
+        dataGenerator: (el) => {
             return {
                 w: parseInt(el.getAttribute('data-width'), 10),
                 h: parseInt(el.getAttribute('data-height'), 10),

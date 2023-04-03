@@ -1,7 +1,4 @@
 
-
-jsPlumbToolkitConnectorEditorsOrthogonal.initialize()
-
 const START = "start"
 const OUTPUT = "output"
 const QUESTION = "question"
@@ -12,12 +9,12 @@ const SOURCE = "source"
 const TARGET = "target"
 
 
-jsPlumbToolkitBrowserUIVanilla2.ready(() => {
+jsPlumbToolkit.ready(() => {
 
 
 // ------------------------- dialogs -------------------------------------
 
-    const dialogs = jsPlumbToolkitDialogs2.newInstance({
+    const dialogs = new jsPlumbToolkit.Dialogs({
 
         dialogs: {
             "dlgText": {
@@ -62,7 +59,7 @@ jsPlumbToolkitBrowserUIVanilla2.ready(() => {
 
     // Declare an instance of the Toolkit and supply a nodeFactory, used when adding new nodes, and a beforeConnect interceptor, used
     // to control what can be connected to what.
-    const toolkit = jsPlumbToolkitBrowserUIVanilla2.newInstance({
+    const toolkit = jsPlumbToolkit.newInstance({
         nodeFactory: function(type, data, continueCallback, abortCallback) {
             dialogs.show({
                 id: "dlgText",
@@ -73,7 +70,7 @@ jsPlumbToolkitBrowserUIVanilla2.ready(() => {
                     if (data.text && data.text.length >= 2) {
                         // and it was at least 2 chars
                         // set an id and continue.
-                        data.id = jsPlumbUtil.uuid();
+                        data.id = jsPlumbToolkit.uuid();
                         continueCallback(data);
                     }
                     else {
@@ -251,7 +248,7 @@ jsPlumbToolkitBrowserUIVanilla2.ready(() => {
         }
     })
 
-    const edgeEditor = new jsPlumbToolkitConnectorEditors.EdgePathEditor(renderer)
+    const edgeEditor = new jsPlumbToolkit.EdgePathEditor(renderer)
 
     toolkit.bind("undoRedo:update", function(state) {
         controls.setAttribute("can-undo", state.undoCount > 0 ? "true" : "false");
@@ -353,7 +350,7 @@ jsPlumbToolkitBrowserUIVanilla2.ready(() => {
     //  selector: css3 selector identifying elements inside `source` that ae draggable
     //  dataGenerator: this function takes a DOM element and returns some default data for a node of the type represented by the element.
 
-    jsPlumbToolkitDrop.createSurfaceManager({
+    jsPlumbToolkit.createSurfaceDropManager({
         source:nodePalette,
         selector:"div",
         dataGenerator: function (el) {
@@ -371,7 +368,7 @@ jsPlumbToolkitBrowserUIVanilla2.ready(() => {
 // -------------------- printing --------------------------
 
     // register a handler in the client side. the server will look for the handler with this ID.
-    jsPlumbToolkitPrint.registerHandler(renderer, "jsplumb-demo-print");
+    jsPlumbToolkit.registerHandler(renderer, "jsplumb-demo-print");
 
 })
 

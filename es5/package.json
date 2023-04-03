@@ -1,6 +1,6 @@
 {
     "name": "flowchart-builder",
-    "version": "5.8.0",
+    "version": "6.x",
     "description": "",
     "main": "demo.js",
     "repository": {
@@ -14,15 +14,6 @@
     },
     "homepage": "https://github.com/jsplumb-toolkit-demonstrations/flowchart-builder#readme",
     "dependencies": {
-        "@jsplumbtoolkit/browser-ui-vanilla-2": "^5.12.0",
-        "@jsplumbtoolkit/drop": "^5.12.0",
-        "@jsplumbtoolkit/labels": "^5.12.0",
-        "@jsplumbtoolkit/print": "^5.12.0",
-        "@jsplumbtoolkit/dialogs-2": "^5.12.0",
-        "@jsplumbtoolkit/connector-editors-orthogonal": "^5.12.0",
-        "@jsplumbtoolkit/connector-orthogonal": "^5.12.0",
-        "@jsplumbtoolkit/browser-ui-plugin-drawing-tools": "^5.12.0",
-        "@jsplumbtoolkit/browser-ui-plugin-miniview": "^5.12.0",
-        "@jsplumbtoolkit/browser-ui-plugin-lasso": "^5.12.0"
+        "@jsplumbtoolkit/browser-ui": "^6.0.0"
     }
 }

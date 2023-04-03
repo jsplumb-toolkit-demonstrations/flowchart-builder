@@ -17,11 +17,11 @@
     },
     "homepage": "https://github.com/jsplumb-toolkit-demonstrations/flowchart-builder#readme",
     "dependencies": {
-        "@jsplumbtoolkit/all": "6.0.0-RC1"
+        "@jsplumbtoolkit/browser-ui": "^6.0.0"
     },
     "devDependencies": {
         "@types/node": "14.17.3",
-        "@types/estree": "0.0.47",
+        "@types/estree": "1.0.0",
         "@babel/cli": "^7.4.4",
         "@babel/core": "^7.4.4",
         "@babel/plugin-proposal-class-properties": "^7.4.4",
